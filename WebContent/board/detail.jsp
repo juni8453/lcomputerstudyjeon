@@ -4,8 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원 상세</title>
-</head>
+<title>게시판 상세</title>
 <style>
 	table {
 		border-collapse:collapse;
@@ -49,16 +48,18 @@
 		width: 200px; text-align: left; padding-left: 10px;
 	}
 </style>
+</head>
 <body>
 
 <div class="flex">
-	<div class="label border">이름</div>
-	<div class="value border">${user.u_name}</div>
+	<div class="label border">제목</div>
+	<div class="value border">${board.b_title}</div>
 </div>
 <div class="flex">
-	<div class="label border">나이</div>
-	<div class="value border">${user.u_age}</div>
+	<div class="label border">내용</div>
+	<div class="value border">${board.b_content}</div>
 </div>
+
 
 </body>
 </html>

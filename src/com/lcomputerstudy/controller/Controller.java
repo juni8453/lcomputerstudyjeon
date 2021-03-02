@@ -39,12 +39,15 @@ public class Controller extends HttpServlet {
 		String idx = null;
 		HttpSession session = null;
 		User user = null;
+		Board board = null;
 		command = checkSession(request, response, command);
 		BoardService boardService = null;
 		UserService userService = null;
 
 		int usercount = 0;
+		int boardcount = 0;
 		int page = 1;
+		int count = 0;
 
 		switch (command) {
 		case "/user-list.do":
@@ -55,7 +58,7 @@ public class Controller extends HttpServlet {
 			userService = UserService.getInstance();
 			ArrayList<User> list = userService.getUsers(page);
 			usercount = userService.getUsersCount();
-			Pagination pagination = new Pagination(page);
+			Pagination pagination = new Pagination(page, usercount);
 			
 			request.setAttribute("list", list);
 			request.setAttribute("usercount", usercount);
@@ -126,13 +129,23 @@ public class Controller extends HttpServlet {
 			user = userService.getUser(idx);
 			request.setAttribute("user", user);
 			view = "user/detail";
-			
-		case "/user-write.do":
-			view = "user/write";
 			break;
 			
-		case "/user-write-process.do":
-			Board board = new Board();
+		case "/board-detail.do":
+			idx = request.getParameter("b_idx");
+			boardService = BoardService.getInstance();
+			board = null;
+			board = boardService.getBoard(idx);
+			request.setAttribute("board", board);
+			view = "board/detail";
+			break;
+			
+		case "/board-write.do":
+			view = "board/write";
+			break;
+			
+		case "/board-write-process.do":
+			board = new Board();
 			
 			board.setB_title(request.getParameter("title"));
 			board.setB_content(request.getParameter("content"));
@@ -142,8 +155,28 @@ public class Controller extends HttpServlet {
 			
 			boardService = BoardService.getInstance();
 			boardService.insertBoard(board);
-			view = "user/write-result";
+			view = "board/write-result";
 			break;
+			
+		case "/board-list.do":
+			page = 1;
+			//user-list에서 page 변수를 사용했기 떄문에 다시 변수 지정
+			String reqPage2 = request.getParameter("page");
+			if(reqPage2 != null) {
+				page = Integer.parseInt(reqPage2);
+			}
+			boardService = BoardService.getInstance();
+			ArrayList<Board> boardlist = boardService.getBoards(page);
+			boardcount = boardService.getBoardCount();
+			Pagination pagination2 = new Pagination(page, boardcount);
+			
+			request.setAttribute("list2", boardlist);
+			request.setAttribute("boardcount", boardcount);
+			request.setAttribute("pagination", pagination2);
+			
+			view = "board/board-list";
+			break;
+
 		}
 	
 		RequestDispatcher rd = request.getRequestDispatcher(view + ".jsp");

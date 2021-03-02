@@ -5,7 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원목록2</title>
+<title>게시판 목록</title>
+</head>
 <style>
 	h1{
 		text-align:center;
@@ -43,38 +44,34 @@
 		border-radius:5px;
 	}
 </style>
-</head>
 <body>
-<h1>회원 목록</h1>
+<h1>게시판 목록</h1>
 <table>
 	<tr>
-		<td colspan="3"> 전체 회원 수 : ${pagination.count}</td>
+		<th>번호</th>
+		<th>제목</th>
+		<th>내용</th>
+		<th>날짜</th>
 	</tr>
-	
-	<tr>
-		<th>NO</th>
-		<th>ID</th>
-		<th>이름</th>
-	</tr>
-	<c:forEach items="${list}" var="item" varStatus="status">
+	<c:forEach items="${list2}" var="item2" varStatus="status">
 		<tr>
-			<td><a href="user-detail.do?u_idx=${item.u_idx}">${item.rownum}</a></td>
-			<td>${item.u_id}</td>
-			<td>${item.u_name}</td>
+			<td>${item2.b_idx}</td>
+			<td>${item2.b_title}</td>
+			<td>${item2.b_content}</td>
+			<td>${item2.b_date}</td>
 		</tr>
 	</c:forEach>
-	
 </table>
 <div>
 	<ul>
 		 <c:choose>
-			<c:when test="${ pagination.page > pagination.pageUnit}">
+			<c:when test="${ pagination.page > pagination.pageUnit }">
 				<li>
-					<a href="user-list.do?page=${pagination.prevPage}">◀</a>
+					<a href="board-list.do?page=${ pagination.prevPage }">◀</a>
 				</li>
 			</c:when>
 		</c:choose> 
-		<c:forEach var="i" begin="${pagination.startPage}" end="${pagination.endPage}" step="1">
+		<c:forEach var="i" begin="${ pagination.startPage }" end="${ pagination.endPage }" step="1">
 			<c:choose>
 				<c:when test="${ pagination.page == i }">
 					<li style="background-color:#ededed;">
@@ -83,7 +80,7 @@
 				</c:when>
 				<c:when test="${ pagination.page != i }">
 					<li>
-						<a href="user-list.do?page=${i}">${i}</a>
+						<a href="board-list.do?page=${i}">${i}</a>
 					</li>
 				</c:when>
 			</c:choose>
@@ -91,7 +88,7 @@
 		 <c:choose>
 			<c:when test="${ pagination.endPage < pagination.lastPage }">
 				<li style="">
-					<a href="user-list.do?page=${pagination.nextPage}">▶</a>
+					<a href="board-list.do?page=${ pagination.nextPage }">▶</a>
 				</li>
 			</c:when>
 		</c:choose> 

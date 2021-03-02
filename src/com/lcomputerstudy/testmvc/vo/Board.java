@@ -8,6 +8,7 @@ public class Board {
 	private String b_date;
 	private String b_writer;
 	private int u_idx;
+	private int rownum;
 	
 	public int getB_idx() {
 		return b_idx;
@@ -44,5 +45,11 @@ public class Board {
 	}
 	public void setU_idx(int u_idx) {
 		this.u_idx = u_idx;
+	}
+	public int getRownum() {
+		return rownum;
+	}
+	public void setRownum(int rownum) {
+		this.rownum = rownum;
 	}
 }

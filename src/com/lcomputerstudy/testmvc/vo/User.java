@@ -10,8 +10,6 @@ public class User {
 	private String u_age;
 	private int rownum;
 	
-	
-	
 	public int getU_idx() {
 		return u_idx;
 	}

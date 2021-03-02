@@ -48,7 +48,8 @@ ${sessionScope.user.u_name }님
 	<ul>
 		<li><a href="user-list.do">회원 목록</a></li>
 		<li><a href="logout.do">로그아웃</a></li>
-		<li><a href="user-write.do">게시판 글 작성</a></li>
+		<li><a href="board-write.do">게시판 글 작성</a></li>
+		<li><a href="board-list.do">게시판 목록</a></li>
 	</ul>
 </div>
 </body>

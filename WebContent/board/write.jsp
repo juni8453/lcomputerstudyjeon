@@ -22,7 +22,7 @@
 <body>
 <h1>게시판 글 작성</h1>
 
-<form action="user-write-process.do" name="write" method="post">
+<form action="board-write-process.do" name="write" method="post">
 	<input type="hidden" name="u_idx" value="${sessionScope.user.u_idx}">
 	<p>제목:<input type="text" name="title"></p>
 	<p>내용:<input type="text" name="content"></p>
