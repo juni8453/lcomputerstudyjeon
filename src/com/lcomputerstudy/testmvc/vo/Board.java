@@ -7,6 +7,7 @@ public class Board {
 	private String b_content;
 	private String b_date;
 	private String b_writer;
+	private int b_views;
 	private int u_idx;
 	private int rownum;
 	
@@ -39,6 +40,12 @@ public class Board {
 	}
 	public void setB_writer(String b_writer) {
 		this.b_writer = b_writer;
+	}
+	public int getB_views() {
+		return b_views;
+	}
+	public void setB_views(int b_views) {
+		this.b_views = b_views;
 	}
 	public int getU_idx() {
 		return u_idx;

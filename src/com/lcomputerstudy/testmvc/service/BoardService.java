@@ -33,7 +33,10 @@ public class BoardService {
 	}
 
 	public Board getBoard(String b_idx) {
+			   dao.getBoardViews(b_idx);
+			   // return 되기 전에 DAO의 getBoardViews(); 메서드 호출
 		return dao.getBoard(b_idx);
+		//보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출
 	}
 	
 	public int getBoardCount() {

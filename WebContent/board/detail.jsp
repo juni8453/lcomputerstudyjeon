@@ -54,12 +54,18 @@
 <div class="flex">
 	<div class="label border">제목</div>
 	<div class="value border">${board.b_title}</div>
+	<%//컨트롤러에 저장되어있는 board값을 setAttribute를 사용하여 뽑아내기 %>
 </div>
 <div class="flex">
 	<div class="label border">내용</div>
 	<div class="value border">${board.b_content}</div>
+	<%//컨트롤러에 저장되어있는 board값을 setAttribute를 사용하여 뽑아내기 %>
 </div>
-
+<div class="flex">
+	<div class="label border">날짜</div>
+	<div class="value border">${board.b_date}</div>
+	<%//컨트롤러에 저장되어있는 board값을 setAttribute를 사용하여 뽑아내기 %>
+</div>
 
 </body>
 </html>

@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import com.lcomputerstudy.testmvc.database.DBConnection;
 import com.lcomputerstudy.testmvc.vo.Board;
-import com.lcomputerstudy.testmvc.vo.User;
 
 public class BoardDAO {
 	
@@ -81,6 +80,7 @@ public class BoardDAO {
 				board.setB_content(rs.getString("b_content"));
 				board.setB_date(rs.getString("b_date"));
 				board.setU_idx(rs.getInt("u_idx"));
+				board.setB_views(rs.getInt("b_views"));
 				
 				list.add(board);
 				
@@ -113,10 +113,16 @@ public class BoardDAO {
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
+				// if문 안에 Board board = null 이라고 변수선언을 한다면, 
+				// if문이 끝나고 없어지므로 Board getBoard 메서드의 인스턴스 변수로 지정하는 것
 				board = new Board();
 				board.setB_title(rs.getString("b_title"));
+				//vo 패키지의 Board 클래스 private 변수에 값을 저장하기 위해 미리 쿼리를 저장한 ResultSet 객체의 
+				//메서드 getString()을 사용해 vo 패키지의 private 변수에 복사한다.
 				board.setB_content(rs.getString("b_content"));
+				board.setB_date(rs.getString("b_date"));
 				board.setU_idx(rs.getInt("u_idx"));
+				//보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출 > 보드에 name값 받아옴
 			}
 		} catch(Exception ex) {
 			System.out.println("SQLException : "+ex.getMessage());
@@ -129,6 +135,7 @@ public class BoardDAO {
 			}
 		}
 		return board;
+		// 받아온 값들 컨트롤러의 board로 리턴
 	}
 	
 	public int getBoardCount() {
@@ -159,5 +166,31 @@ public class BoardDAO {
 		}
 		return count;
 	}
-	
-}
+
+	public void getBoardViews(String b_idx) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+	 //	ResultSet rs = null; 데이터 베이스를 실행만 시키면 되기때문에 필요없음
+     // int views = 0; 반환값 없어서 딱히 필요없음
+		
+		try {
+			conn = DBConnection.getConnection();
+			String query = "UPDATE board SET b_views = b_views+1 WHERE b_idx=?";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, b_idx);
+			// 0번째 자리에, 얻어온 b_idx값 지정
+			//물음표 값을 지정해야하기 때문에 setString 사용해서 값 지정(b_idx는 String 타입이라서)
+			pstmt.executeUpdate();
+			
+			} catch(Exception e) {
+				
+			} finally {
+				try {
+					if(pstmt != null)pstmt.close();
+					if(conn != null)conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}

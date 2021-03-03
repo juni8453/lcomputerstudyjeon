@@ -134,9 +134,10 @@ public class Controller extends HttpServlet {
 		case "/board-detail.do":
 			idx = request.getParameter("b_idx");
 			boardService = BoardService.getInstance();
-			board = null;
 			board = boardService.getBoard(idx);
+			//보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출 > 보드에 name값 받아옴 >> 리턴된 board값 null자리에 저장.
 			request.setAttribute("board", board);
+			//저장된 board값을 setArttribute로 뽑기
 			view = "board/detail";
 			break;
 			
@@ -170,7 +171,9 @@ public class Controller extends HttpServlet {
 			boardcount = boardService.getBoardCount();
 			Pagination pagination2 = new Pagination(page, boardcount);
 			
-			request.setAttribute("list2", boardlist);
+			request.setAttribute("boardlist", boardlist);
+			// setAttribute(String name, Object value) > 이름이 name인 속성 값을 value로 지정한다.
+			// 이름이 boardlist인 속성 값을 boardlist로 지정한다.
 			request.setAttribute("boardcount", boardcount);
 			request.setAttribute("pagination", pagination2);
 			

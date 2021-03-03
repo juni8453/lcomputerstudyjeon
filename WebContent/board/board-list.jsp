@@ -52,13 +52,17 @@
 		<th>제목</th>
 		<th>내용</th>
 		<th>날짜</th>
+		<th>조회수</th>
 	</tr>
-	<c:forEach items="${list2}" var="item2" varStatus="status">
+	<c:forEach items="${boardlist}" var="board" varStatus="status">
+	<%//item - collection 객체, var - 사용할 변수, varStatus - 반복 index 변수 %>
 		<tr>
-			<td>${item2.b_idx}</td>
-			<td>${item2.b_title}</td>
-			<td>${item2.b_content}</td>
-			<td>${item2.b_date}</td>
+			<td><a href = "board-detail.do?b_idx=${board.b_idx}">${board.rownum}</a></td>
+			<%//값 넘길 때 링크 적고 ? 붙여서 뒤에 적어줌 %>
+			<td>${board.b_title}</td>
+			<td>${board.b_content}</td>
+			<td>${board.b_date}</td>
+			<td>${board.b_views}</td>
 		</tr>
 	</c:forEach>
 </table>
