@@ -57,10 +57,12 @@
 		<th>이름</th>
 	</tr>
 	<c:forEach items="${list}" var="item" varStatus="status">
+	<!-- list 객체를 써서 안에 있는 값들을 하나씩 item에 넣음 -->
 		<tr>
 			<td><a href="user-detail.do?u_idx=${item.u_idx}">${item.rownum}</a></td>
 			<td>${item.u_id}</td>
 			<td>${item.u_name}</td>
+			<!-- 따라서 item에 있는 u_id, u_name 지정해서 사용 -->
 		</tr>
 	</c:forEach>
 	

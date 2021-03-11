@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import com.lcomputerstudy.testmvc.database.DBConnection;
 import com.lcomputerstudy.testmvc.vo.Board;
+import com.lcomputerstudy.testmvc.vo.Comment;
 
 public class BoardDAO {
 	
@@ -29,21 +30,46 @@ public class BoardDAO {
 			
 		try {
 			conn = DBConnection.getConnection();
-			String sql = "insert into board(b_title,b_content,u_idx) values(?,?,?)";
+			String sql = "insert into board(b_title,b_content,u_idx,b_views) values(?,?,?,?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, board.getB_title());
 			pstmt.setString(2, board.getB_content());
 			pstmt.setInt(3, board.getU_idx());
+			pstmt.setInt(4, 0);
 			//B_date는 DB상에서 기본값을 current_timestamp()로 변경하여 자동으로 찍히게 한다.
 			//따라서 로직에서 제외시켜도 됨
 			pstmt.executeUpdate();
-		} catch( Exception ex) {
+		} catch(Exception ex) {
 			System.out.println("SQLException : "+ex.getMessage());
 		} finally {
 			try {
 				if (pstmt != null) pstmt.close();
 				if (conn != null) conn.close();
 			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void insertComment(Comment comment) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "insert into comment(c_content,b_idx,u_idx) values(?,?,?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, comment.getC_content());
+			pstmt.setInt(2, comment.getB_idx());
+			pstmt.setInt(3, comment.getU_idx());
+			pstmt.executeUpdate();
+		} catch(Exception e) {
+			System.out.println("SQLException : "+e.getMessage());
+		} finally {
+			try {
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch(SQLException e) {
 				e.printStackTrace();
 			}
 		}
@@ -122,6 +148,7 @@ public class BoardDAO {
 				board.setB_content(rs.getString("b_content"));
 				board.setB_date(rs.getString("b_date"));
 				board.setU_idx(rs.getInt("u_idx"));
+				board.setB_idx(rs.getInt("b_idx"));
 				//보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출 > 보드에 name값 받아옴
 			}
 		} catch(Exception ex) {
@@ -193,4 +220,72 @@ public class BoardDAO {
 				}
 			}
 		}
+
+	public ArrayList<Comment> getBoardComments(int b_idx) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<Comment> commentlist = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "SELECT*FROM comment WHERE b_idx=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, b_idx);
+			rs = pstmt.executeQuery();
+			commentlist = new ArrayList<Comment>();
+			
+			while(rs.next()){
+				Comment comment = new Comment();
+				comment.setC_idx(rs.getInt("c_idx"));
+				comment.setC_content(rs.getString("c_content"));
+				comment.setC_date(rs.getString("c_date"));
+				comment.setB_idx(rs.getInt("b_idx"));
+				comment.setU_idx(rs.getInt("u_idx"));
+				
+				commentlist.add(comment);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+				
+		}finally {
+			try {
+				if(rs != null)rs.close();
+				if(pstmt != null)pstmt.close();
+				if(conn != null)conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return commentlist;
 	}
+
+	public void updateCommnet(Comment comment) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "UPDATE comment SET c_content=? WHERE c_idx =?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, comment.getC_content());
+			pstmt.setInt(2, comment.getC_idx());
+			pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+				if(conn != null) conn.close();
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	
+}

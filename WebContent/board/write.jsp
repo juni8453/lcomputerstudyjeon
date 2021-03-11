@@ -24,6 +24,7 @@
 
 <form action="board-write-process.do" name="write" method="post">
 	<input type="hidden" name="u_idx" value="${sessionScope.user.u_idx}">
+	<!-- sessionScope.user에 있는 u_idx값을 함께 DB에 보내야하기 때문에 hidden 타입으로 지정해주면 됨 -->
 	<p>제목:<input type="text" name="title"></p>
 	<p>내용:<input type="text" name="content"></p>
 	<p>작성자:${sessionScope.user.u_name}</p>

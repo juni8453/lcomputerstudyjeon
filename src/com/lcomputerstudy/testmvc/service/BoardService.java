@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import com.lcomputerstudy.testmvc.dao.BoardDAO;
 import com.lcomputerstudy.testmvc.dao.UserDAO;
 import com.lcomputerstudy.testmvc.vo.Board;
+import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.vo.Pagination;
 import com.lcomputerstudy.testmvc.vo.User;
 
 public class BoardService {
+	// getInstance(); 메소드 실행 > service = new BoardService();로 객체 생성 
 	
 	private static BoardService service = null;
 	private static BoardDAO dao = null;
@@ -27,6 +29,10 @@ public class BoardService {
 	public void insertBoard(Board board) {
 		dao.insertBoard(board);
 	}
+	
+	public void insertComment(Comment comment) {
+		dao.insertComment(comment);
+	}
 
 	public ArrayList<Board> getBoards(int page) {
 		return dao.getBoards(page);
@@ -41,6 +47,14 @@ public class BoardService {
 	
 	public int getBoardCount() {
 		return dao.getBoardCount();
+	}
+
+	public ArrayList<Comment> getBoardComments(int b_idx) {
+		return dao.getBoardComments(b_idx);
+	}
+
+	public void updateComment(Comment comment) {
+		dao.updateCommnet(comment);
 	}
 }
 

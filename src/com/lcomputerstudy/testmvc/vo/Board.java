@@ -10,7 +10,8 @@ public class Board {
 	private int b_views;
 	private int u_idx;
 	private int rownum;
-	
+
+
 	public int getB_idx() {
 		return b_idx;
 	}

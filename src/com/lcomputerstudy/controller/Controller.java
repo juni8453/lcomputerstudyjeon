@@ -13,9 +13,11 @@ import javax.servlet.http.HttpSession;
 import com.lcomputerstudy.testmvc.service.UserService;
 import com.lcomputerstudy.testmvc.vo.Pagination;
 import com.lcomputerstudy.testmvc.vo.User;
+import com.lcomputerstudy.testmvc.vo.Board;
+import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.service.BoardService;
 import com.lcomputerstudy.testmvc.dao.BoardDAO;
-import com.lcomputerstudy.testmvc.vo.Board;
+
 
 @WebServlet("*.do")
 public class Controller extends HttpServlet {
@@ -40,14 +42,18 @@ public class Controller extends HttpServlet {
 		HttpSession session = null;
 		User user = null;
 		Board board = null;
+		Comment comment = null;
 		command = checkSession(request, response, command);
 		BoardService boardService = null;
 		UserService userService = null;
+		boolean isRedirect = false; 
+		//isRedirect 사용하기 위해 기본값 false로 변수 선언
 
 		int usercount = 0;
 		int boardcount = 0;
 		int page = 1;
 		int count = 0;
+		int b_idx = 0;
 
 		switch (command) {
 		case "/user-list.do":
@@ -61,6 +67,7 @@ public class Controller extends HttpServlet {
 			Pagination pagination = new Pagination(page, usercount);
 			
 			request.setAttribute("list", list);
+			//(앞 list는 이름(JSP에 적는 값,아무렇게 적어도 상관 없음 ${list}, 뒷 list는 변수 값/마우스 대면 불나옴) 
 			request.setAttribute("usercount", usercount);
 			request.setAttribute("pagination", pagination);
 			
@@ -132,12 +139,15 @@ public class Controller extends HttpServlet {
 			break;
 			
 		case "/board-detail.do":
-			idx = request.getParameter("b_idx");
+			b_idx = Integer.parseInt(request.getParameter("b_idx"));
 			boardService = BoardService.getInstance();
-			board = boardService.getBoard(idx);
+			board = boardService.getBoard(Integer.toString(b_idx));
 			//보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출 > 보드에 name값 받아옴 >> 리턴된 board값 null자리에 저장.
 			request.setAttribute("board", board);
 			//저장된 board값을 setArttribute로 뽑기
+			ArrayList<Comment> boardcomment = boardService.getBoardComments(b_idx);
+			//한 게시물에 달려있는 댓글들만 가져와야 하기 때문에 b_idx값이 필요
+			request.setAttribute("boardcomment", boardcomment);
 			view = "board/detail";
 			break;
 			
@@ -157,6 +167,23 @@ public class Controller extends HttpServlet {
 			boardService = BoardService.getInstance();
 			boardService.insertBoard(board);
 			view = "board/write-result";
+			break;
+			
+		case "/board-comment-process.do":
+			comment = new Comment();
+			
+			comment.setC_content(request.getParameter("content"));
+			comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+			comment.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
+			
+			boardService = BoardService.getInstance();
+			boardService.insertComment(comment);
+		//	view = "board/comment-result";
+			
+			isRedirect = true;
+			response.sendRedirect("board-detail.do?b_idx="+comment.getB_idx());
+			// 리다이렉트 시 댓글을 쓴 게시판에 다시 찾아와 댓글 게시가 이뤄져야하기 때문에 getB_idx 값을 넘겨줌
+			// ex) board-detail.do?b_idx=4 (예를 들어,b_idx가 4인 주소에 뿌려줘야하기 때문)
 			break;
 			
 		case "/board-list.do":
@@ -179,11 +206,28 @@ public class Controller extends HttpServlet {
 			
 			view = "board/board-list";
 			break;
-
+			
+		case "/board-comment-update.do":
+			comment = new Comment();
+			comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
+			comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+			comment.setC_content(request.getParameter("c_content"));
+			
+			boardService = BoardService.getInstance();
+			boardService.updateComment(comment);
+			ArrayList<Comment> commentList = boardService.getBoardComments(comment.getB_idx());
+			
+			request.setAttribute("boardcomment", commentList);
+			
+			view = "board/comment-list";
+			break;
+			
 		}
-	
-		RequestDispatcher rd = request.getRequestDispatcher(view + ".jsp");
-		rd.forward(request, response);
+		if (!isRedirect) {
+			//isRedircet가 true라면 정상적으로 view+jsp가 실행되도록 설정
+			RequestDispatcher rd = request.getRequestDispatcher(view + ".jsp");
+			rd.forward(request, response);
+		}
 	} // end doPost
 	
 	String checkSession(HttpServletRequest request, HttpServletResponse response, String command) {
