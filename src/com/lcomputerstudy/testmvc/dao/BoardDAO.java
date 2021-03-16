@@ -74,7 +74,7 @@ public class BoardDAO {
 			}
 		}
 	}
-	
+
 	public ArrayList<Board> getBoards(int page) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -264,7 +264,6 @@ public class BoardDAO {
 	public void updateCommnet(Comment comment) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 		
 		try {
 			conn = DBConnection.getConnection();
@@ -277,15 +276,34 @@ public class BoardDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				if(rs != null) rs.close();
 				if(pstmt != null) pstmt.close();
 				if(conn != null) conn.close();
 			} catch(SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		
 	}
 	
+	public void deleteComment(Comment comment) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "DELETE FROM comment WHERE c_idx = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, comment.getC_idx());
+			pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null)pstmt.close();
+				if(conn != null)conn.close();
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 }

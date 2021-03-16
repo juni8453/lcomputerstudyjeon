@@ -56,5 +56,9 @@ public class BoardService {
 	public void updateComment(Comment comment) {
 		dao.updateCommnet(comment);
 	}
+	
+	public void deleteComment(Comment comment) {
+		dao.deleteComment(comment);
+	}
 }
 

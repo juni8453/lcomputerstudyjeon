@@ -46,6 +46,13 @@
 </style>
 <body>
 <h1>게시판 목록</h1>
+<form action="board-list.do" name="user" method="post">
+	<select name="select">
+		<option value="none">=== 선택 ===</option>
+		<option value="title">제목</option>
+	</select>
+<p><input type = "text" name = "search"><input type = "submit" value = "검색"></p>
+</form>
 <table>
 	<tr>
 		<th>번호</th>

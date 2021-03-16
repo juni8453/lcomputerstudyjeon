@@ -188,6 +188,7 @@ public class Controller extends HttpServlet {
 			
 		case "/board-list.do":
 			page = 1;
+			
 			//user-list에서 page 변수를 사용했기 떄문에 다시 변수 지정
 			String reqPage2 = request.getParameter("page");
 			if(reqPage2 != null) {
@@ -218,6 +219,22 @@ public class Controller extends HttpServlet {
 			ArrayList<Comment> commentList = boardService.getBoardComments(comment.getB_idx());
 			
 			request.setAttribute("boardcomment", commentList);
+			
+			view = "board/comment-list";
+			break;
+			
+		case "/board-comment-delete.do":
+			comment = new Comment();
+			comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
+			b_idx = Integer.parseInt(request.getParameter("b_idx"));
+			//ArrayList<Comment>에서 int b_idx를 받고있기 때문에 b_idx를 뽑아와 저장한다.
+			
+			boardService = BoardService.getInstance();
+			boardService.deleteComment(comment);
+			ArrayList<Comment> cmtList = boardService.getBoardComments(b_idx);
+			//뽑아온 b_idx를 getBoardComments 메소드를 호출하며 보냄
+			
+			request.setAttribute("boardcomment", cmtList);
 			
 			view = "board/comment-list";
 			break;

@@ -65,7 +65,7 @@
 	}
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<!-- script는 </head>위에 씀(오류방지) -->
+<!-- jquery script는 </head>위에 씀(먼저 실행되어 생기는 오류방지) -->
 </head>
 <h1>게시판 상세 내용</h1>
 <body>
@@ -119,8 +119,9 @@
 				<td>${comment.c_date}</td>	
 				<!-- 넣은 것들을 comment에 있는 c_idx, c_content, c_date로 뽑아내서 사용함 -->
 				<td><button style="margin-left:20px;" class="btn-update">수정</button></td>
-				<td><button style="margin-left:20px;">삭제</button></td>
+				<td><button style="margin-left:20px;" class="btn-delete" c_idx="${comment.c_idx}">삭제</button></td>
 			</tr>
+			<!-- <tr>~</tr> 똑같이 복사 > 붙여넣기 -->
 			<tr style="display: none;" class="tr-reg">
 				<td>${comment.c_idx}</td>
 				<td><textarea rows="1" cols="60">${comment.c_content}</textarea></td>
@@ -153,6 +154,24 @@ $(document).on('click', '.btn-reg', function () {
 	  $('#comment-list').html(html);
 	});
 });
+
+$(document).on('click', '.btn-delete', function () {
+	if (confirm("정말 삭제하시겠습니까?")) {
+		let c_idx = $(this).attr('c_idx');
+		let b_idx = '${board.b_idx}';
+	
+		$.ajax({
+		  method: "POST",
+		  url: "board-comment-delete.do",
+		  data: {c_idx: c_idx, b_idx: b_idx}
+		})
+		.done(function( html ) {
+		  $('#comment-list').html(html);
+		});
+	}
+});
+
+
 	
 </script>
 </body>

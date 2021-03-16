@@ -17,7 +17,7 @@
 			<td>${comment.c_content}</td>
 			<td>${comment.c_date}</td>	
 			<td><button style="margin-left:20px;" class="btn-update">수정</button></td>
-			<td><button style="margin-left:20px;">삭제</button></td>
+			<td><button style="margin-left:20px;" class="btn-delete" c_idx="${comment.c_idx}">삭제</button></td>
 			<!-- 넣은 것들을 comment에 있는 c_idx, c_content, c_date로 뽑아내서 사용함 -->
 		</tr>
 		<tr style="display: none;" class="tr-reg">
