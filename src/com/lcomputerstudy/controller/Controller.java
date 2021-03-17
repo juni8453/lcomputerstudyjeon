@@ -188,6 +188,8 @@ public class Controller extends HttpServlet {
 			
 		case "/board-list.do":
 			page = 1;
+			String keyWord = request.getParameter("keyWord");
+			// keyWord 변수에 getParameter 메소드를 사용하여 keyWord를 가져와 저장
 			
 			//user-list에서 page 변수를 사용했기 떄문에 다시 변수 지정
 			String reqPage2 = request.getParameter("page");
@@ -195,8 +197,9 @@ public class Controller extends HttpServlet {
 				page = Integer.parseInt(reqPage2);
 			}
 			boardService = BoardService.getInstance();
-			ArrayList<Board> boardlist = boardService.getBoards(page);
-			boardcount = boardService.getBoardCount();
+			ArrayList<Board> boardlist = boardService.getBoards(page,keyWord);
+			//검색 기능을 구현하기 위해 keyWord 넘겨줌
+			boardcount = boardService.getBoardCount(keyWord);
 			Pagination pagination2 = new Pagination(page, boardcount);
 			
 			request.setAttribute("boardlist", boardlist);
@@ -204,6 +207,7 @@ public class Controller extends HttpServlet {
 			// 이름이 boardlist인 속성 값을 boardlist로 지정한다.
 			request.setAttribute("boardcount", boardcount);
 			request.setAttribute("pagination", pagination2);
+			request.setAttribute("keyWord", keyWord);
 			
 			view = "board/board-list";
 			break;

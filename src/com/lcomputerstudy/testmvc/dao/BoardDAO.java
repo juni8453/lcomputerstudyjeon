@@ -75,7 +75,7 @@ public class BoardDAO {
 		}
 	}
 
-	public ArrayList<Board> getBoards(int page) {
+	public ArrayList<Board> getBoards(int page, String keyWord) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -85,28 +85,46 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-			String query = new StringBuilder()
-					.append("SELECT 		@ROWNUM := @ROWNUM - 1 AS ROWNUM,\n")
-					.append("				ta.*\n")
-					.append("FROM 			board ta,\n")
-					.append("				(SELECT @rownum := (SELECT	COUNT(*)-?+1 FROM board ta)) tb\n")
-					.append("LIMIT			?, 3\n")
-					.toString();
-			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, pageNum);
-			pstmt.setInt(2, pageNum);
+//			String query = new StringBuilder()
+//					.append("SELECT 		@ROWNUM := @ROWNUM - 1 AS ROWNUM,\n")
+//					.append("				ta.*\n")
+//					.append("FROM 			board ta,\n")
+//					.append("				(SELECT @rownum := (SELECT	COUNT(*)-?+1 FROM board ta)) tb\n")
+//					.append("LIMIT			?, 3\n")
+//					.toString();
+			String where = "";
+			//null로 선언 시 오류가 나기 때문에 ""로 선언
+			if (keyWord != null) {
+				where = "and b_title LIKE ?";
+			}
+			//keyWord가 null이 아니라면 즉, 검색칸에 무언가 적혀있는 상태일 때 쿼리문에 "and b_title LIKE ?" 추가되게 if절 추가
+				
+			String sql = "SELECT * FROM board WHERE 1=1 "+where+" LIMIT ?, 3";
+			//1=1은 ture기 때문에 의미는 없지만 and를 붙이기 위해, where 변수를 쿼리문에 추가하기 위해 적어줌
+			pstmt = conn.prepareStatement(sql);
+			
+			if (keyWord != null) {
+				pstmt.setString(1, "%"+keyWord+"%");
+				pstmt.setInt(2, pageNum);
+			//keyWord에 값이 있다면 물음표가 두개가 됨 / "SELECT * FROM board WHERE 1=1 "and b_title LIKE ?" LIMIT ?,3"
+			} else {
+				pstmt.setInt(1, pageNum);
+			//keyWord에 값이 없다면 물음표가 한개가 됨 / "SELECT * FROM board WHERE 1=1 "+where+" LIMIT ?,3"
+			}
+			
 			rs = pstmt.executeQuery();
 			list = new ArrayList<Board>();
 			
 			while(rs.next()){
 				Board board = new Board();
-				board.setRownum(rs.getInt("ROWNUM"));
+				//board.setRownum(rs.getInt("ROWNUM"));
 				board.setB_idx(rs.getInt("b_idx"));
 				board.setB_title(rs.getString("b_title"));
 				board.setB_content(rs.getString("b_content"));
 				board.setB_date(rs.getString("b_date"));
 				board.setU_idx(rs.getInt("u_idx"));
 				board.setB_views(rs.getInt("b_views"));
+				//board.setKeyWord(rs.getString("keyWord"));
 				
 				list.add(board);
 				
@@ -165,7 +183,7 @@ public class BoardDAO {
 		// 받아온 값들 컨트롤러의 board로 리턴
 	}
 	
-	public int getBoardCount() {
+	public int getBoardCount(String keyWord) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -173,8 +191,17 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-			String query = "SELECT COUNT(*) count FROM board";
+			
+			String where = "";
+			if(keyWord != null){
+				where = "and b_title LIKE ?";
+			}
+			String query = "SELECT COUNT(*) count FROM board where 1=1 " + where;
+			
 			pstmt = conn.prepareStatement(query);
+			if(keyWord != null){
+				pstmt.setString(1, "%"+keyWord+"%");
+			}
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {

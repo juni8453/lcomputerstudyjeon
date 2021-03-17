@@ -34,8 +34,8 @@ public class BoardService {
 		dao.insertComment(comment);
 	}
 
-	public ArrayList<Board> getBoards(int page) {
-		return dao.getBoards(page);
+	public ArrayList<Board> getBoards(int page, String keyWord) {
+		return dao.getBoards(page, keyWord);
 	}
 
 	public Board getBoard(String b_idx) {
@@ -45,8 +45,8 @@ public class BoardService {
 		//보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출
 	}
 	
-	public int getBoardCount() {
-		return dao.getBoardCount();
+	public int getBoardCount(String keyWord) {
+		return dao.getBoardCount(keyWord);
 	}
 
 	public ArrayList<Comment> getBoardComments(int b_idx) {

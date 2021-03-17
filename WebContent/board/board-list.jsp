@@ -51,7 +51,7 @@
 		<option value="none">=== 선택 ===</option>
 		<option value="title">제목</option>
 	</select>
-<p><input type = "text" name = "search"><input type = "submit" value = "검색"></p>
+<p><input type = "text" name = "keyWord" value="${keyWord }"><input type = "submit" value = "검색"></p>
 </form>
 <table>
 	<tr>
@@ -64,7 +64,7 @@
 	<c:forEach items="${boardlist}" var="board" varStatus="status">
 	<%//item - collection 객체, var - 사용할 변수, varStatus - 반복 index 변수 %>
 		<tr>
-			<td><a href = "board-detail.do?b_idx=${board.b_idx}">${board.rownum}</a></td>
+			<td><a href = "board-detail.do?b_idx=${board.b_idx}">${board.b_idx}</a></td>
 			<%//값 넘길 때 링크 적고 ? 붙여서 뒤에 적어줌 %>
 			<td>${board.b_title}</td>
 			<td>${board.b_content}</td>
@@ -78,7 +78,7 @@
 		 <c:choose>
 			<c:when test="${ pagination.page > pagination.pageUnit }">
 				<li>
-					<a href="board-list.do?page=${ pagination.prevPage }">◀</a>
+					<a href="board-list.do?page=${ pagination.prevPage }&keyWord=${keyWord}">◀</a>
 				</li>
 			</c:when>
 		</c:choose> 
@@ -91,7 +91,7 @@
 				</c:when>
 				<c:when test="${ pagination.page != i }">
 					<li>
-						<a href="board-list.do?page=${i}">${i}</a>
+						<a href="board-list.do?page=${i}&keyWord=${keyWord}">${i}</a>
 					</li>
 				</c:when>
 			</c:choose>
@@ -99,7 +99,7 @@
 		 <c:choose>
 			<c:when test="${ pagination.endPage < pagination.lastPage }">
 				<li style="">
-					<a href="board-list.do?page=${ pagination.nextPage }">▶</a>
+					<a href="board-list.do?page=${ pagination.nextPage }&keyWord=${keyWord}">▶</a>
 				</li>
 			</c:when>
 		</c:choose> 

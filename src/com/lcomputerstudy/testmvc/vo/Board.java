@@ -10,6 +10,7 @@ public class Board {
 	private int b_views;
 	private int u_idx;
 	private int rownum;
+	private String keyWord;
 
 
 	public int getB_idx() {
@@ -59,5 +60,11 @@ public class Board {
 	}
 	public void setRownum(int rownum) {
 		this.rownum = rownum;
+	}
+	public String getKeyWord() {
+		return keyWord;
+	}
+	public void setKeyWord(String keyWord) {
+		this.keyWord = keyWord;
 	}
 }
