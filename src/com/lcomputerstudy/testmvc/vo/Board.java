@@ -9,8 +9,10 @@ public class Board {
 	private String b_writer;
 	private int b_views;
 	private int u_idx;
+	private int u_id;
 	private int rownum;
 	private String keyWord;
+	private User user;
 
 
 	public int getB_idx() {
@@ -55,6 +57,12 @@ public class Board {
 	public void setU_idx(int u_idx) {
 		this.u_idx = u_idx;
 	}
+	public int getU_id() {
+		return u_id;
+	}
+	public void setU_id(int u_id) {
+		this.u_id = u_id;
+	}
 	public int getRownum() {
 		return rownum;
 	}
@@ -66,5 +74,11 @@ public class Board {
 	}
 	public void setKeyWord(String keyWord) {
 		this.keyWord = keyWord;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

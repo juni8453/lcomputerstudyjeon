@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import com.lcomputerstudy.testmvc.service.UserService;
 import com.lcomputerstudy.testmvc.vo.Pagination;
+import com.lcomputerstudy.testmvc.vo.Search;
 import com.lcomputerstudy.testmvc.vo.User;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
@@ -171,7 +172,6 @@ public class Controller extends HttpServlet {
 			
 		case "/board-comment-process.do":
 			comment = new Comment();
-			
 			comment.setC_content(request.getParameter("content"));
 			comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
 			comment.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
@@ -188,18 +188,26 @@ public class Controller extends HttpServlet {
 			
 		case "/board-list.do":
 			page = 1;
-			String keyWord = request.getParameter("keyWord");
-			// keyWord 변수에 getParameter 메소드를 사용하여 keyWord를 가져와 저장
-			
 			//user-list에서 page 변수를 사용했기 떄문에 다시 변수 지정
+			String keyWord = request.getParameter("keyWord");
+			String select = request.getParameter("select");
+		
+			// keyWord 변수에 getParameter 메소드를 사용하여 keyWord를 가져와 저장
+			// select 변수에 getParameter 메소드를 사용하여 select를 가져와 저장
+			
 			String reqPage2 = request.getParameter("page");
 			if(reqPage2 != null) {
 				page = Integer.parseInt(reqPage2);
 			}
+			
+			Search search = new Search();
+			search.setKeyWord(keyWord);
+			search.setSelect(select);
+			
 			boardService = BoardService.getInstance();
-			ArrayList<Board> boardlist = boardService.getBoards(page,keyWord);
-			//검색 기능을 구현하기 위해 keyWord 넘겨줌
-			boardcount = boardService.getBoardCount(keyWord);
+			ArrayList<Board> boardlist = boardService.getBoards(page, search);
+			//검색 기능을 구현하기 위해 keyWord와 select이 포함된 seach 객체를 넘겨줌
+			boardcount = boardService.getBoardCount(search);
 			Pagination pagination2 = new Pagination(page, boardcount);
 			
 			request.setAttribute("boardlist", boardlist);
@@ -208,6 +216,7 @@ public class Controller extends HttpServlet {
 			request.setAttribute("boardcount", boardcount);
 			request.setAttribute("pagination", pagination2);
 			request.setAttribute("keyWord", keyWord);
+			request.setAttribute("select", select);
 			
 			view = "board/board-list";
 			break;

@@ -68,6 +68,7 @@
 <!-- jquery script는 </head>위에 씀(먼저 실행되어 생기는 오류방지) -->
 </head>
 <h1>게시판 상세 내용</h1>
+<p><a href="board-list.do">돌아가기</a></p>
 <body>
 
 <div class="flex">
@@ -137,6 +138,7 @@
 $(document).on('click', '.btn-update', function () {
 	$(this).parent().parent().next().show(500);
 });
+/*$(선택자).동작함수(); $는 jQuery를 의미, 선택자를 이용하여 원하는 HTML 요소 선택, 동작 함수를 정의하여 동작 설정*/
 
 $(document).on('click', '.btn-reg', function () {
 	let c_idx = $(this).attr('c_idx');

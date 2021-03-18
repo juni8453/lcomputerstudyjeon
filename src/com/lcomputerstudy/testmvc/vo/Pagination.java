@@ -1,8 +1,5 @@
 package com.lcomputerstudy.testmvc.vo;
 
-import com.lcomputerstudy.testmvc.service.BoardService;
-import com.lcomputerstudy.testmvc.service.UserService;
-
 public class Pagination {
 	int count;
 	int page;
@@ -14,7 +11,7 @@ public class Pagination {
 	int nextPage;
 	public static final int pageUnit=5;
 	public static final int perPage=3;
-	UserService userService = null;
+	private Search search = null;
 	
 	public Pagination(int page, int count) {
 		this.page = page;
@@ -81,6 +78,14 @@ public class Pagination {
 	}
 	public void setNextPage(int nextPage) {
 		this.nextPage = nextPage;
+	}
+
+	public Search getSearch() {
+		return search;
+	}
+
+	public void setSearch(Search search) {
+		this.search = search;
 	}
 }
 

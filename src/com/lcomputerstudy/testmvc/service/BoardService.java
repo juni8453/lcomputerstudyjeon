@@ -6,6 +6,7 @@ import com.lcomputerstudy.testmvc.dao.UserDAO;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.vo.Pagination;
+import com.lcomputerstudy.testmvc.vo.Search;
 import com.lcomputerstudy.testmvc.vo.User;
 
 public class BoardService {
@@ -34,8 +35,8 @@ public class BoardService {
 		dao.insertComment(comment);
 	}
 
-	public ArrayList<Board> getBoards(int page, String keyWord) {
-		return dao.getBoards(page, keyWord);
+	public ArrayList<Board> getBoards(int page, Search search) {
+		return dao.getBoards(page, search);
 	}
 
 	public Board getBoard(String b_idx) {
@@ -45,8 +46,8 @@ public class BoardService {
 		//보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출
 	}
 	
-	public int getBoardCount(String keyWord) {
-		return dao.getBoardCount(keyWord);
+	public int getBoardCount(Search search) {
+		return dao.getBoardCount(search);
 	}
 
 	public ArrayList<Comment> getBoardComments(int b_idx) {
