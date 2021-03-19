@@ -125,7 +125,7 @@
 			<!-- <tr>~</tr> 똑같이 복사 > 붙여넣기 -->
 			<tr style="display: none;" class="tr-reg">
 				<td>${comment.c_idx}</td>
-				<td><textarea rows="1" cols="60">${comment.c_content}</textarea></td>
+				<td><textarea rows="1" cols="60"></textarea></td>
 				<td>${comment.c_date}</td>	
 				<td><button style="margin-left:20px;" class="btn-reg" c_idx="${comment.c_idx}">등록</button></td>
 				<td><button style="margin-left:20px;">취소</button></td>
@@ -133,6 +133,7 @@
 		</c:forEach>
 	</table>
 </div>
+<!-- 이 부분의 <div> id를 "comment-list"로 설정 -->
 
 <script>
 $(document).on('click', '.btn-update', function () {

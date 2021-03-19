@@ -104,9 +104,9 @@ public class BoardDAO {
 			// null로 선언 시 오류가 나기 때문에 ""로 선언
 			
 			int pstmtCnt = 0; 
-			if (keyWord != null) {
-				if (select.equals("all")) {
-					ArrayList<String> types = new ArrayList(4);
+			if (keyWord != null && !keyWord.equals("")) {
+				if (select.equals("all") || select.equals("none")) {
+					ArrayList<String> types = new ArrayList<String>(3);
 					types.add("b_title");
 					types.add("b_content");
 					types.add("u_id");
@@ -121,41 +121,31 @@ public class BoardDAO {
 						orCnt++;
 					}
 					where += " ) ";
-				} else if (select.equals("none")) {
-					where += " and b_title LIKE ? ";
-					pstmtCnt++;
-				} else {
+//					all,none select가 선택됬을 때 where 변수에 저장되는 값 (상관없이 검색하도록)
+				} else if (select != null && !select.equals("")) {
 					where += " and " + select + " LIKE ? ";
 					pstmtCnt++;
 				}
+//					all,none이 아닌 다른 select가 선택됬을 때 where 변수에 저장되는 값(선택된 select로 검색하도록)
 			}
-			
-			// keyWord가 null이 아니라면 즉, 검색칸에 무언가 적혀있는 상태일 때 쿼리문에 "and b_title LIKE ?" 추가되게 if절
-			// 추가
-
-			String sql = "SELECT 		ta.*, tb.u_id " + "FROM 			board ta "
-					+ "LEFT JOIN 	user tb ON ta.u_idx = tb.u_idx " + "WHERE 		1=1 " + where + "LIMIT 		?, 3 ";
+			String sql = "SELECT 		ta.*, tb.u_id " 
+						+ "FROM 		board ta "
+						+ "LEFT JOIN 	user tb ON ta.u_idx = tb.u_idx " 
+						+ "WHERE 		1=1 " 
+						+ where + "LIMIT 		?, 3 ";
 			// 1=1은 ture기 때문에 의미는 없지만 and를 붙이기 위해, where 변수를 쿼리문에 추가하기 위해 적어줌
 			/*
 			 * [쿼리문 해석] 1. board의 별명을 ta로 설정 2. LEFT JOIN - user의 별명을 tb로 설정하고 ON을 통해
 			 * ta(board).u_idx와 tb(user).u_idx의 값이 같을 때로 설정 3. SELECT - ta(board)의 모든 것을
 			 * 뽑아오되 tb(user)의 u_id를 뽑아오게 설정
 			 */
-System.err.println(sql);
+
 			pstmt = conn.prepareStatement(sql);
 
 			for (int i=1; i<=pstmtCnt; i++) {
 				pstmt.setString(i, "%" + keyWord + "%");
 			}
 			pstmt.setInt(pstmtCnt+1, pageNum);
-			
-			// keyWord에 값이 있다면 물음표가 두개가 됨 / "SELECT * FROM board WHERE 1=1 "and b_title LIKE
-			// ?" LIMIT ?,3"
-			
-			//pstmt.setInt(1, pageNum);
-			// keyWord에 값이 없다면 물음표가 한개가 됨 / "SELECT * FROM board WHERE 1=1 "+where+" LIMIT
-			// ?,3"
-
 			rs = pstmt.executeQuery();
 
 			list = new ArrayList<Board>();

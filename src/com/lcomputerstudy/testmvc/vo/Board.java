@@ -13,6 +13,9 @@ public class Board {
 	private int rownum;
 	private String keyWord;
 	private User user;
+	private int b_gruop;
+	private int b_order;
+	private int b_depth;
 
 
 	public int getB_idx() {
@@ -74,6 +77,24 @@ public class Board {
 	}
 	public void setKeyWord(String keyWord) {
 		this.keyWord = keyWord;
+	}
+	public int getB_gruop() {
+		return b_gruop;
+	}
+	public void setB_gruop(int b_gruop) {
+		this.b_gruop = b_gruop;
+	}
+	public int getB_order() {
+		return b_order;
+	}
+	public void setB_order(int b_order) {
+		this.b_order = b_order;
+	}
+	public int getB_depth() {
+		return b_depth;
+	}
+	public void setB_depth(int b_depth) {
+		this.b_depth = b_depth;
 	}
 	public User getUser() {
 		return user;

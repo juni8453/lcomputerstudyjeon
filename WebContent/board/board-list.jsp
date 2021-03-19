@@ -6,7 +6,6 @@
 <head>
 <meta charset="UTF-8">
 <title>게시판 목록</title>
-</head>
 <style>
 	h1{
 		text-align:center;
@@ -76,6 +75,10 @@
 		color:#333333;
 	}
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- jquery script는 </head>위에 씀(먼저 실행되어 생기는 오류방지) -->
+</head>
+
 <body>
 <h1>게시판 목록</h1>
 <form action="board-list.do" name="user" method="post">
@@ -90,12 +93,21 @@
 </form>
 <table>
 	<tr>
+		<th><a href="user-list.do">회원 목록</a></th>
+		<th><a href="logout.do">로그아웃</a></th>
+		<th><a href="board-write.do">게시판 글 작성</a></th>
+		<th><a href="board-list.do">게시판 목록</a></th>
+	</tr>
+</table>		
+<table>
+	<tr>
 		<th>번호</th>
 		<th>제목</th>
 		<th>내용</th>
 		<th>글쓴이</th>
 		<th>날짜</th>
 		<th>조회수</th>
+		<th>답글작성</th>
 	</tr>
 	<c:forEach items="${boardlist}" var="board" varStatus="status">
 	<%//item - collection 객체, var - 사용할 변수, varStatus - 반복 index 변수 %>
@@ -107,6 +119,7 @@
 			<td>${board.user.u_id}</td>
 			<td>${board.b_date}</td>
 			<td>${board.b_views}</td>
+			<td><a href = "board-reply.do"><button style="margin-left:20px;">답글작성</button></a></td>
 		</tr>
 	</c:forEach>
 </table>
@@ -115,7 +128,7 @@
 		 <c:choose>
 			<c:when test="${ pagination.page > pagination.pageUnit }">
 				<li>
-					<a href="board-list.do?page=${ pagination.prevPage }&keyWord=${keyWord}">◀</a>
+					<a href="board-list.do?page=${ pagination.prevPage }&keyWord=${keyWord}&select=${select}">◀</a>
 				</li>
 			</c:when>
 		</c:choose> 
@@ -128,7 +141,7 @@
 				</c:when>
 				<c:when test="${ pagination.page != i }">
 					<li>
-						<a href="board-list.do?page=${i}&keyWord=${keyWord}">${i}</a>
+						<a href="board-list.do?page=${i}&keyWord=${keyWord}&select=${select}">${i}</a>
 					</li>
 				</c:when>
 			</c:choose>
@@ -136,7 +149,7 @@
 		 <c:choose>
 			<c:when test="${ pagination.endPage < pagination.lastPage }">
 				<li style="">
-					<a href="board-list.do?page=${ pagination.nextPage }&keyWord=${keyWord}">▶</a>
+					<a href="board-list.do?page=${ pagination.nextPage }&keyWord=${keyWord}&select=${select}">▶</a>
 				</li>
 			</c:when>
 		</c:choose> 

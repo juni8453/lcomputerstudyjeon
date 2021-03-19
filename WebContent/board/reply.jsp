@@ -18,9 +18,15 @@
 			border:10px solid #818181;
 			text-align:center;
 		}
+	textarea{
+		resize:none;
+		width:500px;
+		height:100px;
+	}	
+		
 </style>
 <body>
-<h1>게시판 글 작성</h1>
+<h1>답글 작성</h1>
 <table>
 	<tr>
 		<th><a href="user-list.do">회원 목록</a></th>
@@ -28,13 +34,16 @@
 		<th><a href="board-list.do">게시판 목록</a></th>
 	</tr>
 </table>	
-<form action="board-write-process.do" name="write" method="post">
+<form action="board-reply-process.do" name="reply" method="post">
 	<input type="hidden" name="u_idx" value="${sessionScope.user.u_idx}">
 	<!-- sessionScope.user에 있는 u_idx값을 함께 DB에 보내야하기 때문에 hidden 타입으로 지정해주면 됨 -->
-	<p>제목:<input type="text" name="title"></p>
-	<p>내용:<input type="text" name="content"></p>
-	<p>작성자:${sessionScope.user.u_name}</p>
-	<p><input type="submit" value="작성하기"></p>	
+	<div style="width:500px; height:100px; font-size:12px;">
+		<textarea style="resize:none; height:100px; width:500px"></textarea>
+	</div>
+	<div>
+		<p>작성자:${sessionScope.user.u_name}</p>
+	</div>
+<p><input type="submit" value="작성하기"></p>
 </form>
 </body>
 </html>

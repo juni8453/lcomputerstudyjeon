@@ -221,6 +221,13 @@ public class Controller extends HttpServlet {
 			view = "board/board-list";
 			break;
 			
+		case "/board-reply.do":
+			view = "board/reply";
+			break;
+			
+		case "/board-reply-process.do":
+			break;
+			
 		case "/board-comment-update.do":
 			comment = new Comment();
 			comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
