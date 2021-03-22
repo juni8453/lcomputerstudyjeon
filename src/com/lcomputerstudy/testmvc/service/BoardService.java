@@ -31,6 +31,10 @@ public class BoardService {
 		dao.insertBoard(board);
 	}
 	
+	public void insertReply(Board board) {
+		dao.insertReply(board);
+	}
+	
 	public void insertComment(Comment comment) {
 		dao.insertComment(comment);
 	}

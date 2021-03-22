@@ -119,7 +119,8 @@
 			<td>${board.user.u_id}</td>
 			<td>${board.b_date}</td>
 			<td>${board.b_views}</td>
-			<td><a href = "board-reply.do"><button style="margin-left:20px;">답글작성</button></a></td>
+			<td><a href = "board-reply.do?b_idx=${board.b_idx }"><button style="margin-left:20px;">답글작성</button></a></td>
+			<!-- 답글작성 버튼 클릭시 b_idx값이 넘어가도록 설정 -->
 		</tr>
 	</c:forEach>
 </table>

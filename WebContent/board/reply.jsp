@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,16 +35,19 @@
 		<th><a href="board-list.do">게시판 목록</a></th>
 	</tr>
 </table>	
-<form action="board-reply-process.do" name="reply" method="post">
-	<input type="hidden" name="u_idx" value="${sessionScope.user.u_idx}">
-	<!-- sessionScope.user에 있는 u_idx값을 함께 DB에 보내야하기 때문에 hidden 타입으로 지정해주면 됨 -->
-	<div style="width:500px; height:100px; font-size:12px;">
-		<textarea style="resize:none; height:100px; width:500px"></textarea>
-	</div>
-	<div>
-		<p>작성자:${sessionScope.user.u_name}</p>
-	</div>
-<p><input type="submit" value="작성하기"></p>
-</form>
+
+	<form action="board-reply-process.do" name="reply" method="post">
+		<input type="hidden" name="u_idx" value="${sessionScope.user.u_idx}">
+		<input type="hidden" name="b_idx" value="${board.b_idx }">
+		<!-- sessionScope.user에 있는 u_idx값을 함께 DB에 보내야하기 때문에 hidden 타입으로 지정해주면 됨 -->
+		<div style="width:500px; height:100px; font-size:12px;">
+			<textarea name="b_content"></textarea>
+		</div>
+		<div>
+			<p>작성자:${sessionScope.user.u_name}</p>
+		</div>
+	<p><input type="submit" value="작성하기"></p>
+	</form>
+
 </body>
 </html>

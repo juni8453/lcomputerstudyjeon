@@ -19,7 +19,6 @@ import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.service.BoardService;
 import com.lcomputerstudy.testmvc.dao.BoardDAO;
 
-
 @WebServlet("*.do")
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -47,8 +46,8 @@ public class Controller extends HttpServlet {
 		command = checkSession(request, response, command);
 		BoardService boardService = null;
 		UserService userService = null;
-		boolean isRedirect = false; 
-		//isRedirect 사용하기 위해 기본값 false로 변수 선언
+		boolean isRedirect = false;
+		// isRedirect 사용하기 위해 기본값 false로 변수 선언
 
 		int usercount = 0;
 		int boardcount = 0;
@@ -59,19 +58,19 @@ public class Controller extends HttpServlet {
 		switch (command) {
 		case "/user-list.do":
 			String reqPage = request.getParameter("page");
-			if(reqPage != null) {
+			if (reqPage != null) {
 				page = Integer.parseInt(reqPage);
 			}
 			userService = UserService.getInstance();
 			ArrayList<User> list = userService.getUsers(page);
 			usercount = userService.getUsersCount();
 			Pagination pagination = new Pagination(page, usercount);
-			
+
 			request.setAttribute("list", list);
-			//(앞 list는 이름(JSP에 적는 값,아무렇게 적어도 상관 없음 ${list}, 뒷 list는 변수 값/마우스 대면 불나옴) 
+			// (앞 list는 이름(JSP에 적는 값,아무렇게 적어도 상관 없음 ${list}, 뒷 list는 변수 값/마우스 대면 불나옴)
 			request.setAttribute("usercount", usercount);
 			request.setAttribute("pagination", pagination);
-			
+
 			view = "user/list";
 			break;
 
@@ -93,43 +92,43 @@ public class Controller extends HttpServlet {
 
 			view = "user/insert-result";
 			break;
-			
+
 		case "/user-login.do":
 			view = "user/login";
 			break;
-			
+
 		case "/user-login-process.do":
 			idx = request.getParameter("login_id");
 			pw = request.getParameter("login_password");
-			
+
 			userService = UserService.getInstance();
-			user = userService.loginUser(idx,pw);
-			
-			if(user != null) {
+			user = userService.loginUser(idx, pw);
+
+			if (user != null) {
 				session = request.getSession();
 //				session.setAttribute("u_idx", user.getU_idx());
 //				session.setAttribute("u_id", user.getU_id());
 //				session.setAttribute("u_pw", user.getU_pw());
 //				session.setAttribute("u_name", user.getU_name());
 				session.setAttribute("user", user);
-				//setAttribute() 메서드를 호출하여 ${sessionScope.user.user_컬럼명}으로 사용가능하다.
+				// setAttribute() 메서드를 호출하여 ${sessionScope.user.user_컬럼명}으로 사용가능하다.
 
 				view = "user/login-result";
 			} else {
 				view = "user/login-fail";
-			}			
+			}
 			break;
-			
+
 		case "/logout.do":
 			session = request.getSession();
 			session.invalidate();
 			view = "user/login";
 			break;
-			
+
 		case "/access-denied.do":
 			view = "user/access-denied";
 			break;
-			
+
 		case "/user-detail.do":
 			idx = request.getParameter("u_idx");
 			userService = UserService.getInstance();
@@ -138,78 +137,79 @@ public class Controller extends HttpServlet {
 			request.setAttribute("user", user);
 			view = "user/detail";
 			break;
-			
+
 		case "/board-detail.do":
 			b_idx = Integer.parseInt(request.getParameter("b_idx"));
 			boardService = BoardService.getInstance();
 			board = boardService.getBoard(Integer.toString(b_idx));
-			//보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출 > 보드에 name값 받아옴 >> 리턴된 board값 null자리에 저장.
+			// 보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출 > 보드에 name값 받아옴 >> 리턴된 board값
+			// null자리에 저장.
 			request.setAttribute("board", board);
-			//저장된 board값을 setArttribute로 뽑기
+			// 저장된 board값을 setArttribute로 뽑기
 			ArrayList<Comment> boardcomment = boardService.getBoardComments(b_idx);
-			//한 게시물에 달려있는 댓글들만 가져와야 하기 때문에 b_idx값이 필요
+			// 한 게시물에 달려있는 댓글들만 가져와야 하기 때문에 b_idx값이 필요
 			request.setAttribute("boardcomment", boardcomment);
 			view = "board/detail";
 			break;
-			
+
 		case "/board-write.do":
 			view = "board/write";
 			break;
-			
+
 		case "/board-write-process.do":
 			board = new Board();
-			
+
 			board.setB_title(request.getParameter("title"));
 			board.setB_content(request.getParameter("content"));
 			board.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
-			//U_idx는 user 보드와 연결시켜주는 키값이기 때문에 꼭 넣어줘야한다.
-			//U_idx는 int 타입이기 때문에 Integer.parseInt로 형변환 해줘야함
-			
+			// U_idx는 user 보드와 연결시켜주는 키값이기 때문에 꼭 넣어줘야한다.
+			// U_idx는 int 타입이기 때문에 Integer.parseInt로 형변환 해줘야함
+
 			boardService = BoardService.getInstance();
 			boardService.insertBoard(board);
 			view = "board/write-result";
 			break;
-			
+
 		case "/board-comment-process.do":
 			comment = new Comment();
 			comment.setC_content(request.getParameter("content"));
 			comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
 			comment.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
-			
+
 			boardService = BoardService.getInstance();
 			boardService.insertComment(comment);
-		//	view = "board/comment-result";
-			
+			// view = "board/comment-result";
+
 			isRedirect = true;
-			response.sendRedirect("board-detail.do?b_idx="+comment.getB_idx());
+			response.sendRedirect("board-detail.do?b_idx=" + comment.getB_idx());
 			// 리다이렉트 시 댓글을 쓴 게시판에 다시 찾아와 댓글 게시가 이뤄져야하기 때문에 getB_idx 값을 넘겨줌
 			// ex) board-detail.do?b_idx=4 (예를 들어,b_idx가 4인 주소에 뿌려줘야하기 때문)
 			break;
-			
+
 		case "/board-list.do":
 			page = 1;
-			//user-list에서 page 변수를 사용했기 떄문에 다시 변수 지정
+			// user-list에서 page 변수를 사용했기 떄문에 다시 변수 지정
 			String keyWord = request.getParameter("keyWord");
 			String select = request.getParameter("select");
-		
+
 			// keyWord 변수에 getParameter 메소드를 사용하여 keyWord를 가져와 저장
 			// select 변수에 getParameter 메소드를 사용하여 select를 가져와 저장
-			
+
 			String reqPage2 = request.getParameter("page");
-			if(reqPage2 != null) {
+			if (reqPage2 != null) {
 				page = Integer.parseInt(reqPage2);
 			}
-			
+
 			Search search = new Search();
 			search.setKeyWord(keyWord);
 			search.setSelect(select);
-			
+
 			boardService = BoardService.getInstance();
 			ArrayList<Board> boardlist = boardService.getBoards(page, search);
-			//검색 기능을 구현하기 위해 keyWord와 select이 포함된 seach 객체를 넘겨줌
+			// 검색 기능을 구현하기 위해 keyWord와 select이 포함된 seach 객체를 넘겨줌
 			boardcount = boardService.getBoardCount(search);
 			Pagination pagination2 = new Pagination(page, boardcount);
-			
+
 			request.setAttribute("boardlist", boardlist);
 			// setAttribute(String name, Object value) > 이름이 name인 속성 값을 value로 지정한다.
 			// 이름이 boardlist인 속성 값을 boardlist로 지정한다.
@@ -217,69 +217,74 @@ public class Controller extends HttpServlet {
 			request.setAttribute("pagination", pagination2);
 			request.setAttribute("keyWord", keyWord);
 			request.setAttribute("select", select);
-			
+
 			view = "board/board-list";
 			break;
-			
+
 		case "/board-reply.do":
+			board = new Board();
+			board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+			request.setAttribute("board", board);
 			view = "board/reply";
 			break;
-			
+
 		case "/board-reply-process.do":
+			board = new Board();
+			board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+			board.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
+			board.setB_content(request.getParameter("b_content"));
+
+			boardService = BoardService.getInstance();
+			boardService.insertReply(board);
+
+			view = "board/reply-result";
 			break;
-			
+
 		case "/board-comment-update.do":
 			comment = new Comment();
 			comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
 			comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
 			comment.setC_content(request.getParameter("c_content"));
-			
+
 			boardService = BoardService.getInstance();
 			boardService.updateComment(comment);
 			ArrayList<Comment> commentList = boardService.getBoardComments(comment.getB_idx());
-			
+
 			request.setAttribute("boardcomment", commentList);
-			
+
 			view = "board/comment-list";
 			break;
-			
+
 		case "/board-comment-delete.do":
 			comment = new Comment();
 			comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
 			b_idx = Integer.parseInt(request.getParameter("b_idx"));
-			//ArrayList<Comment>에서 int b_idx를 받고있기 때문에 b_idx를 뽑아와 저장한다.
-			
+			// ArrayList<Comment>에서 int b_idx를 받고있기 때문에 b_idx를 뽑아와 저장한다.
+
 			boardService = BoardService.getInstance();
 			boardService.deleteComment(comment);
 			ArrayList<Comment> cmtList = boardService.getBoardComments(b_idx);
-			//뽑아온 b_idx를 getBoardComments 메소드를 호출하며 보냄
-			
+			// 뽑아온 b_idx를 getBoardComments 메소드를 호출하며 보냄
+
 			request.setAttribute("boardcomment", cmtList);
-			
+
 			view = "board/comment-list";
 			break;
-			
+
 		}
 		if (!isRedirect) {
-			//isRedircet가 true라면 정상적으로 view+jsp가 실행되도록 설정
+			// isRedircet가 true라면 정상적으로 view+jsp가 실행되도록 설정
 			RequestDispatcher rd = request.getRequestDispatcher(view + ".jsp");
 			rd.forward(request, response);
 		}
 	} // end doPost
-	
+
 	String checkSession(HttpServletRequest request, HttpServletResponse response, String command) {
 		HttpSession session = request.getSession();
-		
-		String[] authList = {
-				"/user-list.do"
-				,"/user-insert.do"
-				,"/user-insert-process.do"
-				,"/user-detail.do"
-				,"/user-edit.do"
-				,"/user-edit-process.do"
-				,"/logout.do"
-			};
-		
+
+		String[] authList = { "/user-list.do", "/user-insert.do", "/user-insert-process.do", "/user-detail.do",
+				"/user-edit.do", "/user-edit-process.do", "/logout.do" };
+
 		for (String item : authList) {
 			if (item.equals(command)) {
 				if (session.getAttribute("user") == null) {
@@ -289,5 +294,4 @@ public class Controller extends HttpServlet {
 		}
 		return command;
 	}
-}	
-
+}

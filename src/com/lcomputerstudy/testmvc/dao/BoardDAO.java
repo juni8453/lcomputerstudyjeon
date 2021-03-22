@@ -54,6 +54,31 @@ public class BoardDAO {
 			}
 		}
 	}
+	
+	public void insertReply(Board board) {
+		 Connection conn = null;
+		 PreparedStatement pstmt = null;
+		 
+		 try {
+			 conn = DBConnection.getConnection();
+			 String sql = "insert into board(u_idx, b_content, b_group) values(?,?,?)";
+			 pstmt = conn.prepareStatement(sql);
+			 pstmt.setInt(1, board.getU_idx());
+			 pstmt.setString(2, board.getB_content());
+			 pstmt.setInt(3, board.getB_idx());
+		 } catch(Exception e) {
+			 System.out.println("SQLException : " + e.getMessage());
+		 } finally {
+			 try {
+			 if(pstmt != null) 
+				 pstmt.close();
+			 if(conn != null)
+				 conn.close();
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		 }
+	}
 
 	public void insertComment(Comment comment) {
 		Connection conn = null;
