@@ -224,7 +224,10 @@ public class Controller extends HttpServlet {
 		case "/board-reply.do":
 			board = new Board();
 			board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+			// board-list.jsp의 a herf 링크로 넘겨받은 b_idx 값을 request.getParameter로 받아옴
+			
 			request.setAttribute("board", board);
+			// 받아온 b_idx 값을 request.setAttribute로 지정하여 reply.jsp에서 ${board.b_idx}로 사용이 가능
 			view = "board/reply";
 			break;
 
@@ -233,6 +236,7 @@ public class Controller extends HttpServlet {
 			board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
 			board.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
 			board.setB_content(request.getParameter("b_content"));
+			board.setB_title(request.getParameter("b_title"));
 
 			boardService = BoardService.getInstance();
 			boardService.insertReply(board);

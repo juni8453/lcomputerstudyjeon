@@ -40,6 +40,9 @@
 		<input type="hidden" name="u_idx" value="${sessionScope.user.u_idx}">
 		<input type="hidden" name="b_idx" value="${board.b_idx }">
 		<!-- sessionScope.user에 있는 u_idx값을 함께 DB에 보내야하기 때문에 hidden 타입으로 지정해주면 됨 -->
+		<div style="width:500px; height:30px; font-size:12px;">
+			<textarea name="b_title"></textarea>
+		</div>
 		<div style="width:500px; height:100px; font-size:12px;">
 			<textarea name="b_content"></textarea>
 		</div>

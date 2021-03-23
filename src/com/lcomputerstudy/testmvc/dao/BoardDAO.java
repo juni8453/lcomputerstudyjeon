@@ -26,34 +26,7 @@ public class BoardDAO {
 		return dao;
 	}
 
-	public void insertBoard(Board board) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-
-		try {
-			conn = DBConnection.getConnection();
-			String sql = "insert into board(b_title,b_content,u_idx,b_views) values(?,?,?,?)";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, board.getB_title());
-			pstmt.setString(2, board.getB_content());
-			pstmt.setInt(3, board.getU_idx());
-			pstmt.setInt(4, 0);
-			// B_date는 DB상에서 기본값을 current_timestamp()로 변경하여 자동으로 찍히게 한다.
-			// 따라서 로직에서 제외시켜도 됨
-			pstmt.executeUpdate();
-		} catch (Exception ex) {
-			System.out.println("SQLException : " + ex.getMessage());
-		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	
 	
 	public void insertReply(Board board) {
 		 Connection conn = null;
@@ -61,11 +34,14 @@ public class BoardDAO {
 		 
 		 try {
 			 conn = DBConnection.getConnection();
-			 String sql = "insert into board(u_idx, b_content, b_group) values(?,?,?)";
+			 String sql = "insert into board(u_idx, b_content, b_title, b_group, b_order) values(?,?,?,?,?)";
 			 pstmt = conn.prepareStatement(sql);
 			 pstmt.setInt(1, board.getU_idx());
 			 pstmt.setString(2, board.getB_content());
-			 pstmt.setInt(3, board.getB_idx());
+			 pstmt.setString(3, board.getB_title());
+			 pstmt.setInt(4, board.getB_idx());
+			 pstmt.setInt(5, board.getB_order());
+			 pstmt.executeUpdate();
 		 } catch(Exception e) {
 			 System.out.println("SQLException : " + e.getMessage());
 		 } finally {
@@ -420,4 +396,113 @@ public class BoardDAO {
 		}
 	}
 
+	public int getOrder(Board board) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int b_order = 0;
+		//return 받아야하는 값이 b_order이기 때문에 선언
+
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "SELECT		MAX(b_order) + 1 b_order "
+					   + "FROM			board ta " 
+					   + "WHERE			1=1 " 
+					   + "AND			b_group = ? ";
+			/*쿼리문 해석
+			 * board 테이블 (ta)의 b_group이 ? 인 데이터 중
+			 * b_order가 가장 높은 곳에 + 1 한 것을 b_order이라 한다.
+			*/
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, board.getB_idx());
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				b_order = rs.getInt("b_order");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return b_order;
+	}
+	
+	public void insertBoard(Board board) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "insert into board(b_title,b_content,u_idx) values(?,?,?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, board.getB_title());
+			pstmt.setString(2, board.getB_content());
+			pstmt.setInt(3, board.getU_idx());
+			// B_date는 DB상에서 기본값을 current_timestamp()로 변경하여 자동으로 찍히게 한다.
+			// 따라서 로직에서 제외시켜도 됨
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+			sql = "SELECT LAST_INSERT_ID() group_id";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				int lastId = rs.getInt("group_id");
+				board.setB_idx(lastId);
+				board.setB_gruop(lastId);
+			}
+				
+		} catch (Exception ex) {
+			System.out.println("SQLException : " + ex.getMessage());
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void updateBoard(Board board) {
+		Connection conn = null;
+		 PreparedStatement pstmt = null;
+		 
+		 try {
+			 conn = DBConnection.getConnection();
+			 String sql = "UPDATE board SET b_group = ? WHERE b_idx=?";
+			 pstmt = conn.prepareStatement(sql);
+			 pstmt.setInt(1, board.getB_gruop());
+			 pstmt.setInt(2, board.getB_idx());
+			 pstmt.executeUpdate();
+		 } catch(Exception e) {
+			 System.out.println("SQLException : " + e.getMessage());
+		 } finally {
+			 try {
+			 if(pstmt != null) 
+				 pstmt.close();
+			 if(conn != null)
+				 conn.close();
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		 }
+	}
 }

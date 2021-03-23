@@ -29,10 +29,21 @@ public class BoardService {
 	
 	public void insertBoard(Board board) {
 		dao.insertBoard(board);
+		// dao.insertBoard(board) 메소드로 title, content, u_idx, group_id를 얻어오고
+		// board.setB_gruop에 셋팅한다.
+		
+		dao.updateBoard(board);
 	}
 	
 	public void insertReply(Board board) {
+		int order = dao.getOrder(board);
+		//dao.getOrder(board)에서 order값을 return 받고,
+		
+		board.setB_order(order);
+		//board.setB_order(order)로 order값을 셋팅한 뒤,
+		
 		dao.insertReply(board);
+		//dao.insertReply(board) 호출
 	}
 	
 	public void insertComment(Comment comment) {
