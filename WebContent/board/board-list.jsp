@@ -109,18 +109,18 @@
 		<th>조회수</th>
 		<th>답글작성</th>
 	</tr>
-	<c:forEach items="${boardlist}" var="board" varStatus="status">
+	<c:forEach items="${boardlist}" var="boardlist" varStatus="status">
 	<%//item - collection 객체, var - 사용할 변수, varStatus - 반복 index 변수 %>
 		<tr>
-			<td><a href = "board-detail.do?b_idx=${board.b_idx}">${board.b_idx}</a></td>
+			<td><a href = "board-detail.do?b_idx=${boardlist.b_idx}">${boardlist.b_idx}</a></td>
 			<%//값 넘길 때 링크 적고 ? 붙여서 뒤에 적어줌 %>
-			<td>${board.b_title}</td>
-			<td>${board.b_content}</td>
-			<td>${board.user.u_id}</td>
-			<td>${board.b_date}</td>
-			<td>${board.b_views}</td>
-			<td><a href = "board-reply.do?b_idx=${board.b_idx }"><button style="margin-left:20px;">답글작성</button></a></td>
-			<!-- 답글작성 버튼 클릭시 b_idx값이 넘어가도록 설정 -->
+			<td>${boardlist.b_title}</td>
+			<td>${boardlist.b_content}</td>
+			<td>${boardlist.user.u_id}</td>
+			<td>${boardlist.b_date}</td>
+			<td>${boardlist.b_views}</td>
+			<td><a href = "board-reply.do?b_idx=${boardlist.b_idx }&b_depth=${boardlist.b_depth}"><button style="margin-left:20px;">답글작성</button></a></td>
+			<!-- 답글작성 버튼 클릭시 b_idx, b_depth 값이 넘어가도록 설정 -->
 		</tr>
 	</c:forEach>
 </table>

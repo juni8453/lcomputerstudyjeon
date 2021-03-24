@@ -34,13 +34,14 @@ public class BoardDAO {
 		 
 		 try {
 			 conn = DBConnection.getConnection();
-			 String sql = "insert into board(u_idx, b_content, b_title, b_group, b_order) values(?,?,?,?,?)";
+				String sql = "insert into board(u_idx, b_content, b_title, b_group, b_order, b_depth) values(?,?,?,?,?,?)";
 			 pstmt = conn.prepareStatement(sql);
 			 pstmt.setInt(1, board.getU_idx());
 			 pstmt.setString(2, board.getB_content());
 			 pstmt.setString(3, board.getB_title());
 			 pstmt.setInt(4, board.getB_idx());
 			 pstmt.setInt(5, board.getB_order());
+			 pstmt.setInt(6, board.getB_depth());
 			 pstmt.executeUpdate();
 		 } catch(Exception e) {
 			 System.out.println("SQLException : " + e.getMessage());
@@ -82,7 +83,7 @@ public class BoardDAO {
 		}
 	}
 
-	public ArrayList<Board> getBoards(int page, Search search) {
+	public ArrayList<Board> getBoards(int page, Search search, int depth) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -94,13 +95,13 @@ public class BoardDAO {
 
 		try {
 			conn = DBConnection.getConnection();
-//			String query = new StringBuilder()
-//					.append("SELECT 		@ROWNUM := @ROWNUM - 1 AS ROWNUM,\n")
-//					.append("				ta.*\n")
-//					.append("FROM 			board ta,\n")
-//					.append("				(SELECT @rownum := (SELECT	COUNT(*)-?+1 FROM board ta)) tb\n")
-//					.append("LIMIT			?, 3\n")
-//					.toString();
+																											//			String query = new StringBuilder()
+																											//					.append("SELECT 		@ROWNUM := @ROWNUM - 1 AS ROWNUM,\n")
+																											//					.append("				ta.*\n")
+																											//					.append("FROM 			board ta,\n")
+																											//					.append("				(SELECT @rownum := (SELECT	COUNT(*)-?+1 FROM board ta)) tb\n")
+																											//					.append("LIMIT			?, 3\n")
+																											//					.toString();
 			String where = "";
 			// null로 선언 시 오류가 나기 때문에 ""로 선언
 			
@@ -142,14 +143,16 @@ public class BoardDAO {
 			 */
 
 			pstmt = conn.prepareStatement(sql);
+			
+
 
 			for (int i=1; i<=pstmtCnt; i++) {
 				pstmt.setString(i, "%" + keyWord + "%");
 			}
 			pstmt.setInt(pstmtCnt+1, pageNum);
 			rs = pstmt.executeQuery();
-
 			list = new ArrayList<Board>();
+			
 			while (rs.next()) {
 				Board board = new Board();
 				User user = new User();
@@ -160,6 +163,7 @@ public class BoardDAO {
 				board.setB_date(rs.getString("b_date"));
 				board.setU_idx(rs.getInt("u_idx"));
 				board.setB_views(rs.getInt("b_views"));
+				board.setB_depth(rs.getInt("b_depth"));
 				user.setU_id(rs.getString("u_id"));
 				// board.setKeyWord(rs.getString("keyWord"));
 
@@ -395,6 +399,42 @@ public class BoardDAO {
 			}
 		}
 	}
+	
+	public int getDepth(Board board) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int b_depth = 0;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "	SELECT		MAX(b_depth) + 1 b_depth " + 
+						 "	FROM		board ta " + 
+						 "	WHERE		1=1 " + 
+						 "	AND			b_depth = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, board.getB_depth());
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				b_depth = rs.getInt("b_depth");
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(pstmt != null)
+					pstmt.close();
+				if(conn != null)
+					conn.close();
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return b_depth;
+	}
 
 	public int getOrder(Board board) {
 		Connection conn = null;
@@ -505,4 +545,7 @@ public class BoardDAO {
 			}
 		 }
 	}
+
+	
+	
 }

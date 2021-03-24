@@ -42,6 +42,10 @@ public class BoardService {
 		board.setB_order(order);
 		//board.setB_order(order)로 order값을 셋팅한 뒤,
 		
+		int depth = dao.getDepth(board);
+		
+		board.setB_depth(depth);
+		
 		dao.insertReply(board);
 		//dao.insertReply(board) 호출
 	}
@@ -50,8 +54,8 @@ public class BoardService {
 		dao.insertComment(comment);
 	}
 
-	public ArrayList<Board> getBoards(int page, Search search) {
-		return dao.getBoards(page, search);
+	public ArrayList<Board> getBoards(int page, Search search, int depth) {
+		return dao.getBoards(page, search, depth);
 	}
 
 	public Board getBoard(String b_idx) {
@@ -76,5 +80,6 @@ public class BoardService {
 	public void deleteComment(Comment comment) {
 		dao.deleteComment(comment);
 	}
+
 }
 

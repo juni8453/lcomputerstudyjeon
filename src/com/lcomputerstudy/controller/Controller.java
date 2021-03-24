@@ -188,10 +188,10 @@ public class Controller extends HttpServlet {
 
 		case "/board-list.do":
 			page = 1;
+			int depth = 0;
 			// user-list에서 page 변수를 사용했기 떄문에 다시 변수 지정
 			String keyWord = request.getParameter("keyWord");
 			String select = request.getParameter("select");
-
 			// keyWord 변수에 getParameter 메소드를 사용하여 keyWord를 가져와 저장
 			// select 변수에 getParameter 메소드를 사용하여 select를 가져와 저장
 
@@ -205,8 +205,8 @@ public class Controller extends HttpServlet {
 			search.setSelect(select);
 
 			boardService = BoardService.getInstance();
-			ArrayList<Board> boardlist = boardService.getBoards(page, search);
-			// 검색 기능을 구현하기 위해 keyWord와 select이 포함된 seach 객체를 넘겨줌
+			ArrayList<Board> boardlist = boardService.getBoards(page, search, depth);
+			// 검색 기능을 구현하기 위해 keyWord와 select이 포함된 search 객체를 넘겨줌
 			boardcount = boardService.getBoardCount(search);
 			Pagination pagination2 = new Pagination(page, boardcount);
 
@@ -224,10 +224,11 @@ public class Controller extends HttpServlet {
 		case "/board-reply.do":
 			board = new Board();
 			board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
-			// board-list.jsp의 a herf 링크로 넘겨받은 b_idx 값을 request.getParameter로 받아옴
+			board.setB_depth(Integer.parseInt(request.getParameter("b_depth")));
+			// board-list.jsp의 a herf 링크로 넘겨받은 b_idx, b_depth값을 request.getParameter로 받아옴
 			
 			request.setAttribute("board", board);
-			// 받아온 b_idx 값을 request.setAttribute로 지정하여 reply.jsp에서 ${board.b_idx}로 사용이 가능
+			// 받아온 b_idx 값을 request.setAttribute로 지정하여 reply.jsp에서 ${board.b_idx}, ${board.b_depth} 로 사용이 가능
 			view = "board/reply";
 			break;
 
@@ -237,9 +238,11 @@ public class Controller extends HttpServlet {
 			board.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
 			board.setB_content(request.getParameter("b_content"));
 			board.setB_title(request.getParameter("b_title"));
+			board.setB_depth(Integer.parseInt(request.getParameter("b_depth")));
 
 			boardService = BoardService.getInstance();
 			boardService.insertReply(board);
+			
 
 			view = "board/reply-result";
 			break;
