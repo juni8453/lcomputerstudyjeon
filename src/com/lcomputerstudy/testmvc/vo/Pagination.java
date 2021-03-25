@@ -10,7 +10,7 @@ public class Pagination {
 	int prevPage;
 	int nextPage;
 	public static final int pageUnit=5;
-	public static final int perPage=3;
+	public static final int perPage=6;
 	private Search search = null;
 	
 	public Pagination(int page, int count) {

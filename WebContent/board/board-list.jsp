@@ -114,7 +114,7 @@
 		<tr>
 			<td><a href = "board-detail.do?b_idx=${boardlist.b_idx}">${boardlist.b_idx}</a></td>
 			<%//값 넘길 때 링크 적고 ? 붙여서 뒤에 적어줌 %>
-			<td>${boardlist.b_title}</td>
+			<td style="text-align: left;">${boardlist.b_title}</td>
 			<td>${boardlist.b_content}</td>
 			<td>${boardlist.user.u_id}</td>
 			<td>${boardlist.b_date}</td>

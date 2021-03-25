@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import com.lcomputerstudy.testmvc.database.DBConnection;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
+import com.lcomputerstudy.testmvc.vo.Pagination;
 import com.lcomputerstudy.testmvc.vo.Search;
 import com.lcomputerstudy.testmvc.vo.User;
 
@@ -91,7 +92,7 @@ public class BoardDAO {
 		String keyWord = search.getKeyWord();
 		String select = search.getSelect();
 		// list를 반환할 변수 선언
-		int pageNum = (page - 1) * 3;
+		int pageNum = (page - 1) * Pagination.perPage;
 
 		try {
 			conn = DBConnection.getConnection();
@@ -130,11 +131,14 @@ public class BoardDAO {
 				}
 //					all,none이 아닌 다른 select가 선택됬을 때 where 변수에 저장되는 값(선택된 select로 검색하도록)
 			}
-			String sql = "SELECT 		ta.*, tb.u_id " 
+			String sql = "SELECT 		ta.*, tb.u_id "
 						+ "FROM 		board ta "
 						+ "LEFT JOIN 	user tb ON ta.u_idx = tb.u_idx " 
 						+ "WHERE 		1=1 " 
-						+ where + "LIMIT 		?, 3 ";
+						+ where
+						+ "ORDER BY 	b_group DESC, b_order asc "
+						+ "LIMIT 		?, ?";
+			System.out.println(sql);
 			// 1=1은 ture기 때문에 의미는 없지만 and를 붙이기 위해, where 변수를 쿼리문에 추가하기 위해 적어줌
 			/*
 			 * [쿼리문 해석] 1. board의 별명을 ta로 설정 2. LEFT JOIN - user의 별명을 tb로 설정하고 ON을 통해
@@ -150,6 +154,7 @@ public class BoardDAO {
 				pstmt.setString(i, "%" + keyWord + "%");
 			}
 			pstmt.setInt(pstmtCnt+1, pageNum);
+			pstmt.setInt(pstmtCnt+2, Pagination.perPage);
 			rs = pstmt.executeQuery();
 			list = new ArrayList<Board>();
 			
@@ -576,6 +581,31 @@ public class BoardDAO {
 			 pstmt = conn.prepareStatement(sql);
 			 pstmt.setInt(1, board.getB_group());
 			 pstmt.setInt(2, board.getB_idx());
+			 pstmt.executeUpdate();
+		 } catch(Exception e) {
+			 System.out.println("SQLException : " + e.getMessage());
+		 } finally {
+			 try {
+			 if(pstmt != null) 
+				 pstmt.close();
+			 if(conn != null)
+				 conn.close();
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		 }
+	}
+
+	public void updateOrder(Board board) {
+		Connection conn = null;
+		 PreparedStatement pstmt = null;
+		 
+		 try {
+			 conn = DBConnection.getConnection();
+			 String sql = "UPDATE board SET b_order = b_order+1 WHERE b_group=? and b_order >= ?";
+			 pstmt = conn.prepareStatement(sql);
+			 pstmt.setInt(1, board.getB_group());
+			 pstmt.setInt(2, board.getB_order());
 			 pstmt.executeUpdate();
 		 } catch(Exception e) {
 			 System.out.println("SQLException : " + e.getMessage());
