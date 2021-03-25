@@ -27,35 +27,48 @@ public class BoardService {
 		return service;
 	}
 	
-	public void insertBoard(Board board) {
+	/*public void insertBoard(Board board) {
 		dao.insertBoard(board);
-		// dao.insertBoard(board) 메소드로 title, content, u_idx, group_id를 얻어오고
-		// board.setB_gruop에 셋팅한다.
-		
 		dao.updateBoard(board);
-	}
+	}*/
 	
-	public void insertReply(Board board) {
-		int order = dao.getOrder(board);
-		//dao.getOrder(board)에서 order값을 return 받고,
-		
-		board.setB_order(order);
-		//board.setB_order(order)로 order값을 셋팅한 뒤,
-		
-		int depth = dao.getDepth(board);
-		
-		board.setB_depth(depth);
-		
-		dao.insertReply(board);
-		//dao.insertReply(board) 호출
+	/*public void insertReply(Board board) {
+		// 답글이라면
+		if (board.getB_group() != 0) {	
+																
+			int order = board.getB_order()+1;
+			board.setB_order(order);				
+			int depth = board.getB_depth()+1;
+			board.setB_depth(depth);
+		}
+									
+		dao.insertBoard(board);					
+		// 원글이라면
+		if (board.getB_order() == 0) {
+			dao.updateBoard(board);
+		}
+	}*/
+	
+	public void insertBoard(Board board) {
+		// 답글이라면
+		if (board.getB_group() != 0) {	
+			board.setB_order(board.getB_order()+1);				
+			board.setB_depth(board.getB_depth()+1);
+		}
+									
+		dao.insertBoard(board);
+		// 원글이라면
+		if (board.getB_order() == 0) {
+			dao.updateBoard(board);
+		}
 	}
 	
 	public void insertComment(Comment comment) {
 		dao.insertComment(comment);
 	}
 
-	public ArrayList<Board> getBoards(int page, Search search, int depth) {
-		return dao.getBoards(page, search, depth);
+	public ArrayList<Board> getBoards(int page, Search search) {
+		return dao.getBoards(page, search);
 	}
 
 	public Board getBoard(String b_idx) {

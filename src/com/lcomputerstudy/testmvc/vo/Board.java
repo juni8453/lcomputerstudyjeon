@@ -13,7 +13,7 @@ public class Board {
 	private int rownum;
 	private String keyWord;
 	private User user;
-	private int b_gruop;
+	private int b_group;
 	private int b_order;
 	private int b_depth;
 
@@ -78,11 +78,11 @@ public class Board {
 	public void setKeyWord(String keyWord) {
 		this.keyWord = keyWord;
 	}
-	public int getB_gruop() {
-		return b_gruop;
+	public int getB_group() {
+		return b_group;
 	}
-	public void setB_gruop(int b_gruop) {
-		this.b_gruop = b_gruop;
+	public void setB_group(int b_group) {
+		this.b_group = b_group;
 	}
 	public int getB_order() {
 		return b_order;

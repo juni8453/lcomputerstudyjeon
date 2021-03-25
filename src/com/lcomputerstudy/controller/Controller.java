@@ -137,58 +137,25 @@ public class Controller extends HttpServlet {
 			request.setAttribute("user", user);
 			view = "user/detail";
 			break;
-
-		case "/board-detail.do":
-			b_idx = Integer.parseInt(request.getParameter("b_idx"));
-			boardService = BoardService.getInstance();
-			board = boardService.getBoard(Integer.toString(b_idx));
-			// 보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출 > 보드에 name값 받아옴 >> 리턴된 board값
-			// null자리에 저장.
-			request.setAttribute("board", board);
-			// 저장된 board값을 setArttribute로 뽑기
-			ArrayList<Comment> boardcomment = boardService.getBoardComments(b_idx);
-			// 한 게시물에 달려있는 댓글들만 가져와야 하기 때문에 b_idx값이 필요
-			request.setAttribute("boardcomment", boardcomment);
-			view = "board/detail";
-			break;
-
+			
 		case "/board-write.do":
 			view = "board/write";
 			break;
 
 		case "/board-write-process.do":
 			board = new Board();
-
 			board.setB_title(request.getParameter("title"));
 			board.setB_content(request.getParameter("content"));
 			board.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
-			// U_idx는 user 보드와 연결시켜주는 키값이기 때문에 꼭 넣어줘야한다.
-			// U_idx는 int 타입이기 때문에 Integer.parseInt로 형변환 해줘야함
-
+																			// U_idx는 user 보드와 연결시켜주는 키값이기 때문에 꼭 넣어줘야한다.
+																			// U_idx는 int 타입이기 때문에 Integer.parseInt로 형변환 해줘야 함 
 			boardService = BoardService.getInstance();
 			boardService.insertBoard(board);
 			view = "board/write-result";
 			break;
-
-		case "/board-comment-process.do":
-			comment = new Comment();
-			comment.setC_content(request.getParameter("content"));
-			comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
-			comment.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
-
-			boardService = BoardService.getInstance();
-			boardService.insertComment(comment);
-			// view = "board/comment-result";
-
-			isRedirect = true;
-			response.sendRedirect("board-detail.do?b_idx=" + comment.getB_idx());
-			// 리다이렉트 시 댓글을 쓴 게시판에 다시 찾아와 댓글 게시가 이뤄져야하기 때문에 getB_idx 값을 넘겨줌
-			// ex) board-detail.do?b_idx=4 (예를 들어,b_idx가 4인 주소에 뿌려줘야하기 때문)
-			break;
-
+			
 		case "/board-list.do":
 			page = 1;
-			int depth = 0;
 			// user-list에서 page 변수를 사용했기 떄문에 다시 변수 지정
 			String keyWord = request.getParameter("keyWord");
 			String select = request.getParameter("select");
@@ -205,7 +172,7 @@ public class Controller extends HttpServlet {
 			search.setSelect(select);
 
 			boardService = BoardService.getInstance();
-			ArrayList<Board> boardlist = boardService.getBoards(page, search, depth);
+			ArrayList<Board> boardlist = boardService.getBoards(page, search);
 			// 검색 기능을 구현하기 위해 keyWord와 select이 포함된 search 객체를 넘겨줌
 			boardcount = boardService.getBoardCount(search);
 			Pagination pagination2 = new Pagination(page, boardcount);
@@ -224,7 +191,9 @@ public class Controller extends HttpServlet {
 		case "/board-reply.do":
 			board = new Board();
 			board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+			board.setB_group(Integer.parseInt(request.getParameter("b_group")));
 			board.setB_depth(Integer.parseInt(request.getParameter("b_depth")));
+			board.setB_order(Integer.parseInt(request.getParameter("b_order")));
 			// board-list.jsp의 a herf 링크로 넘겨받은 b_idx, b_depth값을 request.getParameter로 받아옴
 			
 			request.setAttribute("board", board);
@@ -238,13 +207,45 @@ public class Controller extends HttpServlet {
 			board.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
 			board.setB_content(request.getParameter("b_content"));
 			board.setB_title(request.getParameter("b_title"));
+			board.setB_group(Integer.parseInt(request.getParameter("b_group")));
 			board.setB_depth(Integer.parseInt(request.getParameter("b_depth")));
+			board.setB_order(Integer.parseInt(request.getParameter("b_order")));
 
 			boardService = BoardService.getInstance();
-			boardService.insertReply(board);
+			//boardService.insertReply(board);
+			boardService.insertBoard(board);
 			
-
 			view = "board/reply-result";
+			break;
+			
+		case "/board-detail.do":
+			b_idx = Integer.parseInt(request.getParameter("b_idx"));
+			boardService = BoardService.getInstance();
+			board = boardService.getBoard(Integer.toString(b_idx));
+			// 보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출 > 보드에 name값 받아옴 >> 리턴된 board값
+			// null자리에 저장.
+			request.setAttribute("board", board);
+			// 저장된 board값을 setArttribute로 뽑기
+			ArrayList<Comment> boardcomment = boardService.getBoardComments(b_idx);
+			// 한 게시물에 달려있는 댓글들만 가져와야 하기 때문에 b_idx값이 필요
+			request.setAttribute("boardcomment", boardcomment);
+			view = "board/detail";
+			break;
+			
+		case "/board-comment-process.do":
+			comment = new Comment();
+			comment.setC_content(request.getParameter("content"));
+			comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+			comment.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
+
+			boardService = BoardService.getInstance();
+			boardService.insertComment(comment);
+			// view = "board/comment-result";
+
+			isRedirect = true;
+			response.sendRedirect("board-detail.do?b_idx=" + comment.getB_idx());
+			// 리다이렉트 시 댓글을 쓴 게시판에 다시 찾아와 댓글 게시가 이뤄져야하기 때문에 getB_idx 값을 넘겨줌
+			// ex) board-detail.do?b_idx=4 (예를 들어,b_idx가 4인 주소에 뿌려줘야하기 때문)
 			break;
 
 		case "/board-comment-update.do":

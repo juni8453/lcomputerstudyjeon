@@ -39,7 +39,7 @@ public class BoardDAO {
 			 pstmt.setInt(1, board.getU_idx());
 			 pstmt.setString(2, board.getB_content());
 			 pstmt.setString(3, board.getB_title());
-			 pstmt.setInt(4, board.getB_idx());
+			 pstmt.setInt(4, board.getB_group());
 			 pstmt.setInt(5, board.getB_order());
 			 pstmt.setInt(6, board.getB_depth());
 			 pstmt.executeUpdate();
@@ -83,7 +83,7 @@ public class BoardDAO {
 		}
 	}
 
-	public ArrayList<Board> getBoards(int page, Search search, int depth) {
+	public ArrayList<Board> getBoards(int page, Search search) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -164,6 +164,8 @@ public class BoardDAO {
 				board.setU_idx(rs.getInt("u_idx"));
 				board.setB_views(rs.getInt("b_views"));
 				board.setB_depth(rs.getInt("b_depth"));
+				board.setB_group(rs.getInt("b_group"));
+				board.setB_order(rs.getInt("b_order"));
 				user.setU_id(rs.getString("u_id"));
 				// board.setKeyWord(rs.getString("keyWord"));
 
@@ -435,6 +437,42 @@ public class BoardDAO {
 		}
 		return b_depth;
 	}
+	
+	public int getGroup(Board board) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int b_group = 0;
+		
+		try {
+			conn = DBConnection.getConnection();
+			String sql = "SELECT		MAX(b_group) + ? b_group "
+					+ 	 "FROM			board "
+					+ 	 "WHERE			b_group = 0 ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, board.getB_idx());
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				b_group = rs.getInt("b_group");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs != null)
+					rs.close();
+				if(pstmt != null)
+					pstmt.close();
+				if(conn != null)
+					conn.close();
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return b_group;
+	}
+
 
 	public int getOrder(Board board) {
 		Connection conn = null;
@@ -486,23 +524,30 @@ public class BoardDAO {
 
 		try {
 			conn = DBConnection.getConnection();
-			String sql = "insert into board(b_title,b_content,u_idx) values(?,?,?)";
+			String sql = "insert into board(b_title,b_content,u_idx,b_group,b_order,b_depth) values(?,?,?,?,?,?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, board.getB_title());
 			pstmt.setString(2, board.getB_content());
 			pstmt.setInt(3, board.getU_idx());
+			pstmt.setInt(4, board.getB_group());
+			pstmt.setInt(5, board.getB_order());
+			pstmt.setInt(6, board.getB_depth());
+			
 			// B_date는 DB상에서 기본값을 current_timestamp()로 변경하여 자동으로 찍히게 한다.
 			// 따라서 로직에서 제외시켜도 됨
 			pstmt.executeUpdate();
-			pstmt.close();
 			
-			sql = "SELECT LAST_INSERT_ID() group_id";
-			pstmt = conn.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				int lastId = rs.getInt("group_id");
-				board.setB_idx(lastId);
-				board.setB_gruop(lastId);
+			if (board.getB_group() == 0) {
+				pstmt.close();
+				
+				sql = "SELECT LAST_INSERT_ID() group_id";
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					int lastId = rs.getInt("group_id");
+					board.setB_idx(lastId);
+					board.setB_group(lastId);
+				}
 			}
 				
 		} catch (Exception ex) {
@@ -529,7 +574,7 @@ public class BoardDAO {
 			 conn = DBConnection.getConnection();
 			 String sql = "UPDATE board SET b_group = ? WHERE b_idx=?";
 			 pstmt = conn.prepareStatement(sql);
-			 pstmt.setInt(1, board.getB_gruop());
+			 pstmt.setInt(1, board.getB_group());
 			 pstmt.setInt(2, board.getB_idx());
 			 pstmt.executeUpdate();
 		 } catch(Exception e) {
@@ -545,6 +590,7 @@ public class BoardDAO {
 			}
 		 }
 	}
+
 
 	
 	

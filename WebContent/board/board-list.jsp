@@ -119,7 +119,7 @@
 			<td>${boardlist.user.u_id}</td>
 			<td>${boardlist.b_date}</td>
 			<td>${boardlist.b_views}</td>
-			<td><a href = "board-reply.do?b_idx=${boardlist.b_idx }&b_depth=${boardlist.b_depth}"><button style="margin-left:20px;">답글작성</button></a></td>
+			<td><a href = "board-reply.do?b_idx=${boardlist.b_idx }&b_group=${boardlist.b_group }&b_depth=${boardlist.b_depth}&b_order=${boardlist.b_order}"><button style="margin-left:20px;">답글작성</button></a></td>
 			<!-- 답글작성 버튼 클릭시 b_idx, b_depth 값이 넘어가도록 설정 -->
 		</tr>
 	</c:forEach>
