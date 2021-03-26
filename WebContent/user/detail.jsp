@@ -42,15 +42,20 @@
 	}
 	
 	.label {
-		width: 100px; text-align: right;
+		width: 100px; text-align: center;
 	}
 	
 	.value {
-		width: 200px; text-align: left; padding-left: 10px;
+		width: 200px; text-align: center; padding-left: 10px;
 	}
 </style>
 <body>
+<h1> 회원 정보 </h1>
 
+<div class="flex">
+	<div class="label border">회원번호</div>
+	<div class="value border">${user.u_idx}</div>
+</div>
 <div class="flex">
 	<div class="label border">이름</div>
 	<div class="value border">${user.u_name}</div>
@@ -58,6 +63,10 @@
 <div class="flex">
 	<div class="label border">나이</div>
 	<div class="value border">${user.u_age}</div>
+</div>
+<div class="flex">
+	<div class="lavel border">전화번호</div>
+	<div class="value border">${user.u_tel}</div>
 </div>
 
 </body>

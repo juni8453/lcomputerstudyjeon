@@ -54,6 +54,7 @@ public class BoardService {
 		if (board.getB_group() != 0) {	
 			board.setB_order(board.getB_order()+1);				
 			board.setB_depth(board.getB_depth()+1);
+			board.setB_step(board.getB_step()+1);
 			
 			dao.updateOrder(board);
 		}

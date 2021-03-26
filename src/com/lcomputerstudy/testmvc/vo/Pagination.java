@@ -1,14 +1,14 @@
 package com.lcomputerstudy.testmvc.vo;
 
 public class Pagination {
-	int count;
-	int page;
-	int pageNum;
-	int startPage;
-	int endPage;
-	int lastPage;
-	int prevPage;
-	int nextPage;
+	int count;			// 
+	int page;			// 페이지 갯수
+	int pageNum;		// 페이지 숫자
+	int startPage;		// 시작 페이지
+	int endPage;		// 끝 페이지
+	int lastPage;		// 맨 끝 페이지
+	int prevPage;		// 이전 페이지
+	int nextPage;		// 다음 페이지
 	public static final int pageUnit=5;
 	public static final int perPage=6;
 	private Search search = null;

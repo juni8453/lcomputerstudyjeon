@@ -138,7 +138,6 @@ public class BoardDAO {
 						+ where
 						+ "ORDER BY 	b_group DESC, b_order asc "
 						+ "LIMIT 		?, ?";
-			System.out.println(sql);
 			// 1=1은 ture기 때문에 의미는 없지만 and를 붙이기 위해, where 변수를 쿼리문에 추가하기 위해 적어줌
 			/*
 			 * [쿼리문 해석] 1. board의 별명을 ta로 설정 2. LEFT JOIN - user의 별명을 tb로 설정하고 ON을 통해
@@ -161,14 +160,25 @@ public class BoardDAO {
 			while (rs.next()) {
 				Board board = new Board();
 				User user = new User();
-				// board.setRownum(rs.getInt("ROWNUM"));
 				board.setB_idx(rs.getInt("b_idx"));
-				board.setB_title(rs.getString("b_title"));
+				board.setB_depth(rs.getInt("b_depth"));
+								
+				String replyString = "ㄴ";
+				if(board.getB_depth() > 0) {
+					for (int i=0; i<board.getB_depth(); i++) {
+						replyString += replyString;
+						board.setB_title(replyString + rs.getString("b_title"));
+					}	
+				} 
+				
+				else if(board.getB_depth() == 0) {
+						board.setB_title(rs.getString("b_title"));
+				}
+							
 				board.setB_content(rs.getString("b_content"));
 				board.setB_date(rs.getString("b_date"));
 				board.setU_idx(rs.getInt("u_idx"));
 				board.setB_views(rs.getInt("b_views"));
-				board.setB_depth(rs.getInt("b_depth"));
 				board.setB_group(rs.getInt("b_group"));
 				board.setB_order(rs.getInt("b_order"));
 				user.setU_id(rs.getString("u_id"));

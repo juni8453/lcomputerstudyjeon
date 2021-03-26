@@ -122,6 +122,7 @@ public class Controller extends HttpServlet {
 		case "/logout.do":
 			session = request.getSession();
 			session.invalidate();
+									//session.invalidate() - 세션 완전 삭제 메소드
 			view = "user/login";
 			break;
 
@@ -130,7 +131,7 @@ public class Controller extends HttpServlet {
 			break;
 
 		case "/user-detail.do":
-			idx = request.getParameter("u_idx");
+			idx = request.getParameter("u_idx");	
 			userService = UserService.getInstance();
 			user = null;
 			user = userService.getUser(idx);
@@ -194,10 +195,10 @@ public class Controller extends HttpServlet {
 			board.setB_group(Integer.parseInt(request.getParameter("b_group")));
 			board.setB_depth(Integer.parseInt(request.getParameter("b_depth")));
 			board.setB_order(Integer.parseInt(request.getParameter("b_order")));
-			// board-list.jsp의 a herf 링크로 넘겨받은 b_idx, b_depth값을 request.getParameter로 받아옴
+																					// board-list.jsp의 a herf 링크로 넘겨받은 값을 request.getParameter로 받아옴
 			
 			request.setAttribute("board", board);
-			// 받아온 b_idx 값을 request.setAttribute로 지정하여 reply.jsp에서 ${board.b_idx}, ${board.b_depth} 로 사용이 가능
+																					// 받아온 b_idx 값을 request.setAttribute로 지정하여 reply.jsp에서 ${board.b_idx}, ${board.b_depth} 로 사용이 가능
 			view = "board/reply";
 			break;
 
@@ -222,12 +223,12 @@ public class Controller extends HttpServlet {
 			b_idx = Integer.parseInt(request.getParameter("b_idx"));
 			boardService = BoardService.getInstance();
 			board = boardService.getBoard(Integer.toString(b_idx));
-			// 보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출 > 보드에 name값 받아옴 >> 리턴된 board값
-			// null자리에 저장.
+																					// 보드서비스의 getBoard메서드 호출 > dao의 getBoard메서드 호출 > 보드에 name값 받아옴 >> 리턴된 board값
+																					// null자리에 저장.
 			request.setAttribute("board", board);
-			// 저장된 board값을 setArttribute로 뽑기
+																					// 저장된 board값을 setArttribute로 뽑기
 			ArrayList<Comment> boardcomment = boardService.getBoardComments(b_idx);
-			// 한 게시물에 달려있는 댓글들만 가져와야 하기 때문에 b_idx값이 필요
+																					// 한 게시물에 달려있는 댓글들만 가져와야 하기 때문에 b_idx값이 필요
 			request.setAttribute("boardcomment", boardcomment);
 			view = "board/detail";
 			break;
@@ -240,12 +241,12 @@ public class Controller extends HttpServlet {
 
 			boardService = BoardService.getInstance();
 			boardService.insertComment(comment);
-			// view = "board/comment-result";
+																					// view = "board/comment-result";
 
 			isRedirect = true;
 			response.sendRedirect("board-detail.do?b_idx=" + comment.getB_idx());
-			// 리다이렉트 시 댓글을 쓴 게시판에 다시 찾아와 댓글 게시가 이뤄져야하기 때문에 getB_idx 값을 넘겨줌
-			// ex) board-detail.do?b_idx=4 (예를 들어,b_idx가 4인 주소에 뿌려줘야하기 때문)
+																					// 리다이렉트 시 댓글을 쓴 게시판에 다시 찾아와 댓글 게시가 이뤄져야하기 때문에 getB_idx 값을 넘겨줌
+																					// ex) board-detail.do?b_idx=4 (예를 들어,b_idx가 4인 주소에 뿌려줘야하기 때문)
 			break;
 
 		case "/board-comment-update.do":

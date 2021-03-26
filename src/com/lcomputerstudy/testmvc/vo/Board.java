@@ -16,6 +16,7 @@ public class Board {
 	private int b_group;
 	private int b_order;
 	private int b_depth;
+	private int b_step;
 
 
 	public int getB_idx() {
@@ -95,6 +96,12 @@ public class Board {
 	}
 	public void setB_depth(int b_depth) {
 		this.b_depth = b_depth;
+	}
+	public int getB_step() {
+		return b_step;
+	}
+	public void setB_step(int b_step) {
+		this.b_step = b_step;
 	}
 	public User getUser() {
 		return user;
